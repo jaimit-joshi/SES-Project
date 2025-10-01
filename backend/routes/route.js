@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+const { complainCreate, complainList } = require('../controllers/complain-controller.js');
 const { noticeCreate, noticeList, deleteNotices, deleteNotice, updateNotice } = require('../controllers/notice-controller.js');
 
 
@@ -15,6 +16,12 @@ router.delete("/Notice/:id", deleteNotice)
 
 router.put("/Notice/:id", updateNotice)
 
+
+// Complain
+
+router.post('/ComplainCreate', complainCreate);
+
+router.get('/ComplainList/:id', complainList);
 
 
 
