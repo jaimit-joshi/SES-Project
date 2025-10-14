@@ -1,0 +1,1039 @@
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --secondary-color: #7289da;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --success-color: #4caf50;
+  --danger-color: #f44336;
+  --warning-color: #ff9800;
+  --info-color: #2196f3;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+}
+
+body {
+  background-color: var(--gray-100);
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-500);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-600);
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Update the sidebar-brand styles to center the icon in both collapsed and expanded states */
+.sidebar-brand {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 0;
+}
+
+/* Ensure the sidebar has a fixed width */
+.sidebar {
+  width: 260px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  transition: all 0.3s;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+/* Adjust the sidebar-header to ensure proper spacing */
+.sidebar-header {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-200);
+  height: 64px; /* Fixed height to match topbar */
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--gray-600);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.sidebar-close {
+  background: none;
+  border: none;
+  color: var(--gray-600);
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: none;
+}
+
+.sidebar-menu {
+  padding: 1rem 0;
+  list-style: none;
+}
+
+.sidebar-item {
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--gray-700);
+  transition: all 0.3s;
+  border-radius: 0.25rem;
+  margin: 0 0.5rem;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+}
+
+.sidebar-link.active {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.sidebar-icon {
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-text {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-divider {
+  margin: 1rem 0;
+  border-top: 1px solid var(--gray-200);
+}
+
+.sidebar-heading {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
+/* Update main content styles */
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  transition: all 0.3s;
+  min-height: 100vh;
+  width: calc(100% - 260px);
+}
+
+.main-content.expanded {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
+.content-wrapper {
+  padding: 1rem;
+}
+
+.topbar {
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  height: 64px; /* Fixed height to match sidebar header */
+}
+
+/* Ensure the topbar title is properly aligned */
+.topbar-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--gray-800);
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+}
+
+.user-dropdown-toggle:hover {
+  background-color: var(--gray-100);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.user-name {
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
+  min-width: 200px;
+  z-index: 1000;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.user-dropdown-menu.show {
+  display: block;
+}
+
+.user-dropdown-item {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  color: var(--gray-700);
+  transition: all 0.3s;
+}
+
+.user-dropdown-item:hover {
+  background-color: var(--gray-100);
+  color: var(--primary-color);
+}
+
+.user-dropdown-icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.user-dropdown-divider {
+  margin: 0.5rem 0;
+  border-top: 1px solid var(--gray-200);
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  height: 100%;
+  transition: all 0.3s;
+  border: none;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Tables */
+.table-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  background-color: var(--gray-100);
+}
+
+.table-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table th {
+  background-color: var(--gray-100);
+  color: var(--gray-700);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.custom-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-700);
+}
+
+.custom-table tr:last-child td {
+  border-bottom: none;
+}
+
+.custom-table tr:hover td {
+  background-color: var(--gray-50);
+}
+
+/* Responsive table */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Forms */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+/* Login/Register Pages */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: var(--gray-100);
+  padding: 1rem;
+}
+
+.auth-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+}
+
+.auth-image {
+  background-size: cover;
+  background-position: center;
+  min-height: 100%;
+}
+
+.auth-form {
+  padding: 2rem;
+}
+
+@media (min-width: 768px) {
+  .auth-form {
+    padding: 3rem;
+  }
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .auth-title {
+    font-size: 2rem;
+  }
+}
+
+.auth-subtitle {
+  color: var(--gray-600);
+  margin-bottom: 2rem;
+}
+
+/* Homepage */
+.homepage-container {
+  min-height: 100vh;
+  background-color: var(--gray-100);
+}
+
+.homepage-hero {
+  padding: 3rem 0;
+  background-color: white;
+}
+
+@media (min-width: 768px) {
+  .homepage-hero {
+    padding: 5rem 0;
+  }
+}
+
+.homepage-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--gray-800);
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .homepage-title {
+    font-size: 3rem;
+  }
+}
+
+.homepage-subtitle {
+  font-size: 1rem;
+  color: var(--gray-600);
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .homepage-subtitle {
+    font-size: 1.25rem;
+  }
+}
+
+.homepage-image {
+  max-width: 100%;
+  height: auto;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Choose User Page */
+.choose-user-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  padding: 3rem 0;
+}
+
+@media (min-width: 768px) {
+  .choose-user-container {
+    padding: 5rem 0;
+  }
+}
+
+.user-card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  height: 100%;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .user-card {
+    padding: 2rem;
+    margin-bottom: 0;
+  }
+}
+
+.user-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.user-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin: 0 auto 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .user-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+}
+
+.user-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .user-title {
+    font-size: 1.5rem;
+  }
+}
+
+.user-description {
+  color: var(--gray-600);
+  text-align: center;
+}
+
+/* Mobile sidebar overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .sidebar {
+    width: 70px;
+  }
+
+  .sidebar-text,
+  .sidebar-brand-text {
+    display: none;
+  }
+
+  .sidebar-brand i {
+    margin-right: 0;
+  }
+
+  .main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+
+  .sidebar.expanded {
+    width: 260px;
+  }
+
+  .sidebar.expanded .sidebar-text,
+  .sidebar.expanded .sidebar-brand-text {
+    display: inline;
+  }
+
+  .sidebar.expanded .sidebar-brand i {
+    margin-right: 0.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .sidebar {
+    width: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.mobile-show {
+    width: 260px;
+    transform: translateX(0);
+  }
+
+  .sidebar.mobile-show .sidebar-text,
+  .sidebar.mobile-show .sidebar-brand-text {
+    display: inline;
+  }
+
+  .sidebar.mobile-show .sidebar-brand i {
+    margin-right: 0.5rem;
+  }
+
+  .sidebar-close {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .topbar-mobile-toggle {
+    display: block !important;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .content-wrapper {
+    padding: 0.75rem;
+  }
+
+  .topbar {
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .topbar-title {
+    font-size: 1rem;
+    padding-left: 0.5rem;
+  }
+
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-card {
+    padding: 1rem;
+  }
+}
+
+.topbar-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--gray-700);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Fix for table headers */
+.MuiTableHead-root th {
+  background-color: #f5f5f5 !important;
+  color: #333 !important;
+}
+
+/* Fix for black headers in tables */
+.MuiTableCell-head {
+  background-color: #f5f5f5 !important;
+  color: #333 !important;
+}
+
+/* Style for the logo icon - make it much smaller */
+.sidebar-brand i {
+  font-size: 1.2rem;
+  margin: 0 auto; /* Center the icon */
+}
+
+/* When collapsed, center the icon */
+.sidebar.collapsed .sidebar-brand i {
+  margin: 0 auto;
+}
+
+/* Remove the sidebar-brand-text styles since we're not using it anymore */
+.sidebar-brand-text {
+  display: none; /* Hide the text completely */
+}
+
+/* Add these styles to ensure consistent form styling */
+.MuiCard-root {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.MuiCardContent-root {
+  padding: 24px;
+}
+
+.MuiTextField-root {
+  margin-bottom: 8px;
+}
+
+.MuiButton-contained {
+  text-transform: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.MuiButton-outlined {
+  text-transform: none;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.MuiFormControl-root {
+  width: 100%;
+}
+
+.MuiInputLabel-root {
+  font-weight: 500;
+}
+
+.MuiDivider-root {
+  margin: 16px 0;
+}
+
+/* Form container styles */
+.form-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Card styles */
+.card-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Form header styles */
+.form-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #333;
+}
+
+/* Form field styles */
+.form-field {
+  margin-bottom: 16px;
+}
+
+/* Form button styles */
+.form-button {
+  min-width: 120px;
+  height: 40px;
+  font-weight: 500;
+}
+
+/* Responsive table styles */
+@media (max-width: 767px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .custom-table th,
+  .custom-table td {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  .MuiTableCell-root {
+    padding: 12px 8px !important;
+  }
+}
+
+/* Responsive chart containers */
+.chart-container {
+  width: 100%;
+  height: 300px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 576px) {
+  .chart-container {
+    height: 250px;
+  }
+}
+
+/* Responsive form layouts */
+@media (max-width: 767px) {
+  .form-container {
+    padding: 16px;
+  }
+
+  .MuiCardContent-root {
+    padding: 16px;
+  }
+}
+
+/* Responsive buttons */
+@media (max-width: 576px) {
+  .MuiButton-root {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+  }
+
+  .form-button {
+    min-width: 100px;
+    height: 36px;
+  }
+}
+
+/* Add these specific mobile device fixes at the end of the file */
+@media screen and (max-width: 428px) {
+  /* iPhone and Samsung specific fixes */
+  .dashboard-container {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .sidebar {
+    width: 0;
+    transform: translateX(-100%);
+    z-index: 1050;
+  }
+
+  .sidebar.mobile-show {
+    width: 85%;
+    max-width: 280px;
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  .topbar {
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.25rem;
+  }
+
+  .topbar-title {
+    font-size: 1rem;
+    padding-left: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .content-wrapper {
+    padding: 0.5rem;
+  }
+
+  .dashboard-card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-title {
+    font-size: 0.9rem;
+  }
+
+  .card-value {
+    font-size: 1.25rem;
+  }
+
+  /* Table fixes for small screens */
+  .table-responsive {
+    margin: 0 -0.5rem;
+    width: calc(100% + 1rem);
+  }
+
+  .custom-table th,
+  .custom-table td {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* Form element fixes */
+  .form-control,
+  .form-select,
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  /* Fix for MUI components */
+  .MuiTableCell-root {
+    padding: 8px 6px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .MuiButton-root {
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+    min-width: auto !important;
+  }
+
+  .MuiTypography-h5 {
+    font-size: 1.2rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 1rem !important;
+  }
+
+  /* Fix for charts */
+  .chart-container {
+    height: 200px !important;
+  }
+
+  /* Fix for bottom navigation */
+  .MuiBottomNavigation-root {
+    padding: 4px 0;
+  }
+
+  .MuiBottomNavigationAction-root {
+    padding: 6px 0 !important;
+    min-width: auto !important;
+  }
+
+  .MuiBottomNavigationAction-label {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* Fix for iPhone notch/dynamic island */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .sidebar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(100vh - env(safe-area-inset-top));
+  }
+
+  .topbar {
+    padding-top: calc(0.5rem + env(safe-area-inset-top));
+  }
+}
+
+/* Fix for Samsung Galaxy fold and other ultra-narrow devices */
+@media screen and (max-width: 320px) {
+  .topbar-title {
+    max-width: 120px;
+  }
+
+  .card-value {
+    font-size: 1.1rem;
+  }
+}
