@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import DashboardLayout from "../../components/DashboardLayout"
 import Logout from "../Logout"
 import AdminProfile from "./AdminProfile"
+import EditAdminProfile from "./EditAdminProfile"
 import AdminHomePage from "./AdminHomePage"
 
 import AddStudent from "./studentRelated/AddStudent"
@@ -36,6 +37,7 @@ const AdminDashboard = () => {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Admin/dashboard" element={<AdminHomePage />} />
         <Route path="/Admin/profile" element={<AdminProfile />} />
+        <Route path="/Admin/profile/edit" element={<EditAdminProfile />} />
         <Route path="/Admin/complains" element={<SeeComplains />} />
 
         {/* Notice */}
@@ -90,4 +92,3 @@ const AdminDashboard = () => {
 }
 
 export default AdminDashboard
-

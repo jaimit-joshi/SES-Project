@@ -1,5 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+const getInitialDarkMode = () => {
+  const savedMode = localStorage.getItem("darkMode")
+  if (savedMode !== null) {
+    return JSON.parse(savedMode)
+  }
+  // Check system preference
+  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return true
+  }
+  return false
+}
+
 const initialState = {
   status: "idle",
   userDetails: [],
@@ -9,7 +21,7 @@ const initialState = {
   currentRole: (JSON.parse(localStorage.getItem("user")) || {}).role || null,
   error: null,
   response: null,
-  darkMode: true,
+  darkMode: getInitialDarkMode(),
 }
 
 const userSlice = createSlice({
@@ -36,6 +48,7 @@ const userSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(action.payload))
       state.response = null
       state.error = null
+      state.loading = false
     },
     authFailed: (state, action) => {
       state.status = "failed"
@@ -57,7 +70,7 @@ const userSlice = createSlice({
       state.userDetails = action.payload
       state.loading = false
       state.error = null
-      state.response = null
+      state.response = "success"
     },
     getDeleteSuccess: (state) => {
       state.loading = false
@@ -79,6 +92,7 @@ const userSlice = createSlice({
     },
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
+      localStorage.setItem("darkMode", JSON.stringify(state.darkMode))
     },
   },
 })
@@ -100,4 +114,3 @@ export const {
 } = userSlice.actions
 
 export const userReducer = userSlice.reducer
-

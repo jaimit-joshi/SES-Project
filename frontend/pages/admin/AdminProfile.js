@@ -4,12 +4,9 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { Row, Col, Card, Button } from "react-bootstrap"
 
-const StudentProfile = () => {
+const AdminProfile = () => {
   const { currentUser } = useSelector((state) => state.user)
   const navigate = useNavigate()
-
-  const sclassName = currentUser.sclassName
-  const studentSchool = currentUser.school
 
   return (
     <div className="container-fluid">
@@ -22,7 +19,7 @@ const StudentProfile = () => {
                   {currentUser.name.charAt(0)}
                 </div>
                 <h2 className="fw-bold">{currentUser.name}</h2>
-                <span className="badge bg-primary px-3 py-2">Student</span>
+                <span className="badge bg-primary px-3 py-2">Administrator</span>
               </div>
 
               <hr className="my-4" />
@@ -31,49 +28,23 @@ const StudentProfile = () => {
                 <Col md={6}>
                   <Card className="dashboard-card h-100">
                     <Card.Body className="p-4">
-                      <h5 className="card-title fw-bold mb-3">Academic Information</h5>
-
-                      <div className="mb-3">
-                        <div className="d-flex align-items-center">
-                          <i className="bi bi-building text-primary me-2"></i>
-                          <strong className="me-2">School:</strong>
-                          <span className="text-muted">{studentSchool.schoolName}</span>
-                        </div>
-                      </div>
-
-                      <div className="mb-3">
-                        <div className="d-flex align-items-center">
-                          <i className="bi bi-mortarboard text-primary me-2"></i>
-                          <strong className="me-2">Class:</strong>
-                          <span className="text-muted">{sclassName.sclassName}</span>
-                        </div>
-                      </div>
-
-                      <div className="mb-3">
-                        <div className="d-flex align-items-center">
-                          <i className="bi bi-person-badge text-primary me-2"></i>
-                          <strong className="me-2">Roll Number:</strong>
-                          <span className="text-muted">{currentUser.rollNum}</span>
-                        </div>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-
-                <Col md={6}>
-                  <Card className="dashboard-card h-100">
-                    <Card.Body className="p-4">
                       <h5 className="card-title fw-bold mb-3">Personal Information</h5>
 
-                      {currentUser.email && (
-                        <div className="mb-3">
-                          <div className="d-flex align-items-center">
-                            <i className="bi bi-envelope text-primary me-2"></i>
-                            <strong className="me-2">Email:</strong>
-                            <span className="text-muted">{currentUser.email}</span>
-                          </div>
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center">
+                          <i className="bi bi-person text-primary me-2"></i>
+                          <strong className="me-2">Name:</strong>
+                          <span className="text-muted">{currentUser.name}</span>
                         </div>
-                      )}
+                      </div>
+
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center">
+                          <i className="bi bi-envelope text-primary me-2"></i>
+                          <strong className="me-2">Email:</strong>
+                          <span className="text-muted">{currentUser.email}</span>
+                        </div>
+                      </div>
 
                       {currentUser.phone && (
                         <div className="mb-3">
@@ -94,6 +65,22 @@ const StudentProfile = () => {
                           </div>
                         </div>
                       )}
+                    </Card.Body>
+                  </Card>
+                </Col>
+
+                <Col md={6}>
+                  <Card className="dashboard-card h-100">
+                    <Card.Body className="p-4">
+                      <h5 className="card-title fw-bold mb-3">School Information</h5>
+
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center">
+                          <i className="bi bi-building text-primary me-2"></i>
+                          <strong className="me-2">School:</strong>
+                          <span className="text-muted">{currentUser.schoolName}</span>
+                        </div>
+                      </div>
 
                       {currentUser.dateOfBirth && (
                         <div className="mb-3">
@@ -145,7 +132,7 @@ const StudentProfile = () => {
               </Row>
 
               <div className="text-center mt-4">
-                <Button variant="primary" onClick={() => navigate("/Student/profile/edit")}>
+                <Button variant="primary" onClick={() => navigate("/Admin/profile/edit")}>
                   <i className="bi bi-pencil me-2"></i>Edit Profile
                 </Button>
               </div>
@@ -157,4 +144,4 @@ const StudentProfile = () => {
   )
 }
 
-export default StudentProfile
+export default AdminProfile
