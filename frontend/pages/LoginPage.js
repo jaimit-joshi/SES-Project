@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Container, Row, Col, Form, Button, InputGroup, Spinner, Card } from "react-bootstrap"
 import { loginUser } from "../redux/userRelated/userHandle"
@@ -142,7 +142,7 @@ const LoginPage = ({ role }) => {
                         </Form.Group>
                       )}
 
-                      <Form.Group className="mb-4">
+                      <Form.Group className="mb-3">
                         <Form.Label>Password</Form.Label>
                         <InputGroup>
                           <Form.Control
@@ -154,41 +154,14 @@ const LoginPage = ({ role }) => {
                             required
                           />
                           <Button variant="outline-secondary" onClick={() => setShowPassword(!showPassword)}>
-                            <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                            {showPassword ? "Hide" : "Show"}
                           </Button>
                         </InputGroup>
                       </Form.Group>
 
-                      <Form.Group className="mb-3 d-flex justify-content-between">
-                        <Form.Check type="checkbox" label="Remember me" />
-                        <Link to="#" className="text-primary text-decoration-none">
-                          Forgot password?
-                        </Link>
-                      </Form.Group>
-
-                      <div className="d-grid mb-3">
-                        <Button variant="primary" type="submit" size="lg" disabled={loading}>
-                          {loading ? (
-                            <>
-                              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                              <span className="ms-2">Loading...</span>
-                            </>
-                          ) : (
-                            "Login"
-                          )}
-                        </Button>
-                      </div>
-
-                      {role === "Admin" && (
-                        <div className="text-center mt-3">
-                          <p>
-                            Don't have an account?{" "}
-                            <Link to="/Adminregister" className="text-primary fw-bold">
-                              Sign up
-                            </Link>
-                          </p>
-                        </div>
-                      )}
+                      <Button variant="primary" type="submit" disabled={loading}>
+                        {loading ? <Spinner animation="border" size="sm" /> : "Login"}
+                      </Button>
                     </Form>
                   </div>
                 </Col>
@@ -202,4 +175,3 @@ const LoginPage = ({ role }) => {
 }
 
 export default LoginPage
-

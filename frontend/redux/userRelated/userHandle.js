@@ -13,6 +13,7 @@ import {
   getError,
 } from "./userSlice"
 const REACT_APP_BASE_URL = "http://localhost:5001"
+
 export const loginUser = (fields, role) => async (dispatch) => {
   dispatch(authRequest())
 
@@ -87,18 +88,24 @@ export const deleteUser = (id, address) => async (dispatch) => {
 }*/
 
 export const updateUser = (fields, id, address) => async (dispatch) => {
+  console.log("[v0] updateUser called with:", { fields, id, address })
   dispatch(getRequest())
 
   try {
-    const result = await axios.put(`${REACT_APP_BASE_URL}/${address}/${id}`, fields, {
+    const url = `${REACT_APP_BASE_URL}/${address}/${id}`
+    console.log("[v0] Making PUT request to:", url)
+
+    const result = await axios.put(url, fields, {
       headers: { "Content-Type": "application/json" },
     })
-    if (result.data.schoolName) {
+
+    console.log("[v0] Update response:", result.data)
+
+    if (result.data) {
       dispatch(authSuccess(result.data))
-    } else {
-      dispatch(doneSuccess(result.data))
     }
   } catch (error) {
+    console.log("[v0] Update error:", error)
     dispatch(getError(error))
   }
 }
@@ -120,4 +127,3 @@ export const addStuff = (fields, address) => async (dispatch) => {
     dispatch(authError(error))
   }
 }
-
