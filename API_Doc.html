@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>School Portal API Documentation</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; color: #222; }
+    #nav { background: #283593; padding: 1em; }
+    #nav a { color: #fff; margin-right: 2em; text-decoration: none; font-weight: bold; }
+    #nav a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 24px auto 60px auto; background: #fff; border-radius: 8px; box-shadow: 0 0 24px rgba(0,0,0,0.03); padding: 2em; }
+    h1, h2 { color: #283593; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2em; }
+    th, td { border: 1px solid #bbb; padding: 8px 12px; background: #fafafe; text-align: left; }
+    th { background: #e3eafc; color: #111; }
+    code, .endpoint { background: #f4f6fa; padding: 1px 4px; border-radius: 4px; }
+    .method { font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+    .GET { background: #dcedc8; color: #35581a; }
+    .POST { background: #fce4ec; color: #ad1457; }
+    .PATCH { background: #e3f2fd; color: #1565c0; }
+    .DELETE { background: #ffebee; color: #b71c1c; }
+    .desc { color: #444; }
+    footer { margin: 32px 0 0 0; text-align: center; font-size: 0.95em; color: #777; }
+    .anchor { display: block; position: relative; top: -90px; visibility: hidden; }
+  </style>
+</head>
+<body>
+
+  <div id="nav">
+    <a href="#students">Students</a>
+    <a href="#teachers">Teachers</a>
+    <a href="#classes">Classes</a>
+    <a href="#subjects">Subjects</a>
+    <a href="#admins">Admins</a>
+    <a href="#notices">Notices</a>
+    <a href="#complains">Complains</a>
+  </div>
+
+  <div class="container">
+    <h1>School Portal API Documentation</h1>
+    <p>
+      RESTful APIs to manage schools, users, classes, subjects, and more.<br>Example base URL: <code>https://your-domain/api/</code>
+    </p>
+
+    <span class="anchor" id="students"></span>
+    <h2>Student APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/student/register</code></td><td class="desc">Register a new student</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/student/login</code></td><td class="desc">Student login</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/student/:schoolId</code></td><td class="desc">List all students of a school</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/student/detail/:id</code></td><td class="desc">Get student details by ID</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/student/:id</code></td><td class="desc">Delete student by ID</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/student/all/:schoolId</code></td><td class="desc">Delete all students by school</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/student/byclass/:id</code></td><td class="desc">Delete students by class</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/:id</code></td><td class="desc">Update a student's info</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/result/:id</code></td><td class="desc">Add/update student exam result</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/attendance/:id</code></td><td class="desc">Add/update student attendance</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/clear/bySubject/:id</code></td><td class="desc">Clear attendance by subject</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/clear/all/:id</code></td><td class="desc">Clear all attendance by school</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/remove/bySubject/:id</code></td><td class="desc">Remove attendance by subject</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/remove/all/:id</code></td><td class="desc">Remove all attendance</td></tr>
+    </table>
+
+    <span class="anchor" id="teachers"></span>
+    <h2>Teacher APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/teacher/register</code></td><td class="desc">Register a new teacher</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/teacher/login</code></td><td class="desc">Teacher login</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/teacher/:schoolId</code></td><td class="desc">List all teachers of a school</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/teacher/detail/:id</code></td><td class="desc">Get teacher details by ID</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/teacher/updateSubject</code></td><td class="desc">Update teacher's subject</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/teacher/attendance/:id</code></td><td class="desc">Add/update teacher attendance</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/teacher/:id</code></td><td class="desc">Delete teacher by ID</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/teacher/all/:schoolId</code></td><td class="desc">Delete all teachers by school</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/teacher/byclass/:id</code></td><td class="desc">Delete teachers by class</td></tr>
+    </table>
+
+    <span class="anchor" id="classes"></span>
+    <h2>Class APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/class/</code></td><td class="desc">Create a class</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/class/all/:schoolId</code></td><td class="desc">List all classes by school</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/class/detail/:id</code></td><td class="desc">Get class details</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/class/students/:id</code></td><td class="desc">Get students for a class</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/class/:id</code></td><td class="desc">Delete class by ID</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/class/all/:schoolId</code></td><td class="desc">Delete all classes by school</td></tr>
+    </table>
+
+    <span class="anchor" id="subjects"></span>
+    <h2>Subject APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/subject/</code></td><td class="desc">Create subject(s)</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/subject/all/:schoolId</code></td><td class="desc">List all subjects by school</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/subject/byclass/:id</code></td><td class="desc">Get subjects for a class</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/subject/free/:id</code></td><td class="desc">Get unassigned subjects for class</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/subject/detail/:id</code></td><td class="desc">Get subject details</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/:id</code></td><td class="desc">Delete subject by ID</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/all/:schoolId</code></td><td class="desc">Delete all subjects by school</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/byclass/:id</code></td><td class="desc">Delete subjects by class</td></tr>
+    </table>
+
+    <span class="anchor" id="admins"></span>
+    <h2>Admin APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/admin/register</code></td><td class="desc">Register new school/admin</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/admin/login</code></td><td class="desc">Admin login</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/admin/detail/:id</code></td><td class="desc">Get admin details</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/admin/:id</code></td><td class="desc">Update admin details</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/admin/:id</code></td><td class="desc">Delete admin and school</td></tr>
+    </table>
+
+    <span class="anchor" id="notices"></span>
+    <h2>Notice APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/notice/</code></td><td class="desc">Create a notice</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/notice/all/:schoolId</code></td><td class="desc">List all notices by school</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/notice/:id</code></td><td class="desc">Update a notice</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/notice/:id</code></td><td class="desc">Delete notice by ID</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/notice/all/:schoolId</code></td><td class="desc">Delete all notices by school</td></tr>
+    </table>
+
+    <span class="anchor" id="complains"></span>
+    <h2>Complain APIs</h2>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/complain/</code></td><td class="desc">Create a complaint</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/complain/all/:schoolId</code></td><td class="desc">List all complaints by school</td></tr>
+    </table>
+
+    <footer>
+      <hr>
+      <div>&copy; 2025 School Portal API Docs &middot; </div>
+    </footer>
+  </div>
+
+</body>
+</html>
