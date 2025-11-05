@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const studentSchema = new mongoose.Schema({
   name: {
@@ -6,7 +6,7 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
   rollNum: {
-    type: Number,
+    type: String, // changed from Number → String to avoid CastError during login/register
     required: true,
   },
   password: {
@@ -26,6 +26,25 @@ const studentSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "Student",
+  },
+  email: {
+    type: String,
+    default: "",
+  },
+  phone: {
+    type: String,
+    default: "",
+  },
+  address: {
+    type: String,
+    default: "",
+  },
+  profilePicture: {
+    type: String,
+    default: "",
+  },
+  dateOfBirth: {
+    type: Date,
   },
   examResult: [
     {
@@ -57,25 +76,6 @@ const studentSchema = new mongoose.Schema({
       },
     },
   ],
-  email: {
-    type: String,
-    default: "",
-  },
-  phone: {
-    type: String,
-    default: "",
-  },
-  address: {
-    type: String,
-    default: "",
-  },
-  profilePicture: {
-    type: String,
-    default: "",
-  },
-  dateOfBirth: {
-    type: Date,
-  },
   notificationPreferences: {
     email: {
       type: Boolean,
@@ -86,6 +86,6 @@ const studentSchema = new mongoose.Schema({
       default: false,
     },
   },
-})
+});
 
-module.exports = mongoose.model("student", studentSchema)
+module.exports = mongoose.model("student", studentSchema);
