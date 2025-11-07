@@ -45,6 +45,7 @@ jobs:
             cp -r frontend/pages frontend/src/ || true
             cp -r frontend/redux frontend/src/ || true
             cp -r frontend/theme frontend/src/ || true
+            cp -r frontend/assets frontend/src/ || true
             cp frontend/App.js frontend/src/ || true
             cp frontend/index.js frontend/src/ || true
             cp frontend/setupTests.js frontend/src/ || true
