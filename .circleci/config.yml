@@ -35,35 +35,30 @@ jobs:
             cd frontend
             npm install
 
-      # ⚙️ Create mock /src folder for CRA-based test config
-      - run:
-          name: Prepare Frontend Tests
-          command: |
-            echo "Preparing mock /src directory for CRA tests..."
-            mkdir -p frontend/src
-            cp -r frontend/components frontend/src/ || true
-            cp -r frontend/pages frontend/src/ || true
-            cp -r frontend/redux frontend/src/ || true
-            cp -r frontend/theme frontend/src/ || true
-            cp -r frontend/assets frontend/src/ || true
-            cp frontend/App.js frontend/src/ || true
-            cp frontend/index.js frontend/src/ || true
-            cp frontend/setupTests.js frontend/src/ || true
-            echo "Frontend /src directory ready!"
-
-      # 🧪 Run frontend tests
-      - run:
-          name: Run Frontend Tests
-          command: |
-            cd frontend
-            npm test -- --watchAll=false --ci
-
-      # 🧰 Build frontend
+      # 🧰 Build frontend first (using the real /src directory)
       - run:
           name: Build Frontend
           command: |
             cd frontend
             npm run build
+
+      # ⚙️ (Optional) Create mock /src folder for CRA-based test config
+      - run:
+          name: Prepare Frontend Tests
+          command: |
+            echo "Preparing mock /src directory for CRA tests..."
+            rm -rf frontend/src
+            mkdir -p frontend/src
+            cp -r frontend/{components,pages,redux,theme,assets} frontend/src/ || true
+            cp frontend/{App.js,index.js,index.css,setupTests.js,reportWebVitals.js} frontend/src/ || true
+            echo "Frontend /src directory ready!"
+
+      # 🧪 Run frontend tests (CI mode)
+      - run:
+          name: Run Frontend Tests
+          command: |
+            cd frontend
+            npm test -- --watchAll=false --ci
 
 workflows:
   version: 2
