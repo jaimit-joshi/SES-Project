@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
-jest.mock('../assets/designlogin.jpg', () => 'mock-image');
+
+jest.mock('.*\\.(jpg|jpeg|png|gif|svg)$', () => 'mock-image');
+jest.mock('.*\\.(css|less)$', () => ({}));
 
 jest.mock('axios', () => ({
   get: jest.fn(),
