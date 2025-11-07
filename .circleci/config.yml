@@ -6,42 +6,51 @@ orbs:
 jobs:
   build_and_test:
     docker:
-      - image: cimg/node:20.11  # ✅ Node 20 environment
+      - image: cimg/node:20.11  # Node 20 runtime
     working_directory: ~/project
     steps:
       - checkout
 
-      # 🧱 Install backend dependencies
+      # Confirm directory structure
+      - run:
+          name: Verify Repo Structure
+          command: |
+            echo "Current path: $(pwd)"
+            ls -la
+            ls backend || echo "❌ backend folder missing"
+            ls frontend || echo "❌ frontend folder missing"
+
+      # Install backend dependencies
       - run:
           name: Install Backend Dependencies
           command: |
             cd backend
             npm install
 
-      # 🧪 Run backend tests (mock DB, avoid real connection)
+      # Run backend tests (mock DB mode)
       - run:
           name: Run Backend Tests (Mock DB)
           command: |
             cd backend
             export NODE_ENV=test
             export MONGO_URL="mock://memory-db"
-            jest --runInBand --detectOpenHandles --testTimeout=15000
+            npm test -- --runInBand --detectOpenHandles --testTimeout=15000
 
-      # 🧱 Install frontend dependencies
+      # Install frontend dependencies
       - run:
           name: Install Frontend Dependencies
           command: |
             cd frontend
             npm install
 
-      # 🧪 Run frontend tests
+      # Run frontend tests
       - run:
           name: Run Frontend Tests
           command: |
             cd frontend
             npm test -- --watchAll=false --ci
 
-      # 🧰 Build frontend
+      # Build frontend
       - run:
           name: Build Frontend
           command: |
