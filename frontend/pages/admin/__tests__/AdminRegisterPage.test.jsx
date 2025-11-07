@@ -5,7 +5,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
-import AdminRegisterPage from "../AdminRegisterPage";
+import AdminRegisterPage from "../AdminRegisterPage.js";
 
 const mockStore = configureStore([]);
 
