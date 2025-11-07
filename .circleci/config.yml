@@ -6,28 +6,20 @@ orbs:
 jobs:
   build_and_test:
     docker:
-      - image: cimg/node:20.11  # Node 20 runtime
+      - image: cimg/node:20.11  # ✅ Node 20 environment
     working_directory: ~/project
+
     steps:
       - checkout
 
-      # Confirm directory structure
-      - run:
-          name: Verify Repo Structure
-          command: |
-            echo "Current path: $(pwd)"
-            ls -la
-            ls backend || echo "❌ backend folder missing"
-            ls frontend || echo "❌ frontend folder missing"
-
-      # Install backend dependencies
+      # 🧱 Install backend dependencies
       - run:
           name: Install Backend Dependencies
           command: |
             cd backend
             npm install
 
-      # Run backend tests (mock DB mode)
+      # 🧪 Run backend tests (mock DB)
       - run:
           name: Run Backend Tests (Mock DB)
           command: |
@@ -36,21 +28,36 @@ jobs:
             export MONGO_URL="mock://memory-db"
             npm test -- --runInBand --detectOpenHandles --testTimeout=15000
 
-      # Install frontend dependencies
+      # 🧱 Install frontend dependencies
       - run:
           name: Install Frontend Dependencies
           command: |
             cd frontend
             npm install
 
-      # Run frontend tests
+      # ⚙️ Create mock /src folder for CRA-based test config
+      - run:
+          name: Prepare Frontend Tests
+          command: |
+            echo "Preparing mock /src directory for CRA tests..."
+            mkdir -p frontend/src
+            cp -r frontend/components frontend/src/ || true
+            cp -r frontend/pages frontend/src/ || true
+            cp -r frontend/redux frontend/src/ || true
+            cp -r frontend/theme frontend/src/ || true
+            cp frontend/App.js frontend/src/ || true
+            cp frontend/index.js frontend/src/ || true
+            cp frontend/setupTests.js frontend/src/ || true
+            echo "Frontend /src directory ready!"
+
+      # 🧪 Run frontend tests
       - run:
           name: Run Frontend Tests
           command: |
             cd frontend
             npm test -- --watchAll=false --ci
 
-      # Build frontend
+      # 🧰 Build frontend
       - run:
           name: Build Frontend
           command: |
