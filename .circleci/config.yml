@@ -26,8 +26,7 @@ jobs:
             cd backend
             export NODE_ENV=test
             export MONGO_URL="mock://memory-db"
-            npm test -- --runInBand --detectOpenHandles --testTimeout=15000 || true
-            # ✅ Soft-fail backend tests if needed to not break build
+            npm test -- --runInBand --detectOpenHandles --testTimeout=15000
 
       # 🧱 Install frontend dependencies
       - run:
@@ -36,7 +35,7 @@ jobs:
             cd frontend
             npm install
 
-      # ⚙️ Prepare frontend /src folder for CRA-based tests
+      # ⚙️ Create mock /src folder for CRA-based test config
       - run:
           name: Prepare Frontend Tests
           command: |
@@ -51,13 +50,12 @@ jobs:
             cp frontend/setupTests.js frontend/src/ || true
             echo "Frontend /src directory ready!"
 
-      # 🧪 Run frontend tests (skip AdminRegisterPage.test.jsx)
+      # 🧪 Run frontend tests
       - run:
-          name: Run Frontend Tests (Skip AdminRegisterPage.test.jsx)
+          name: Run Frontend Tests
           command: |
             cd frontend
-            npx jest --watchAll=false --ci --testPathIgnorePatterns="__tests__/AdminRegisterPage.test.jsx" || true
-            # ✅ Skips the failing test and allows build to succeed
+            npm test -- --watchAll=false --ci
 
       # 🧰 Build frontend
       - run:
