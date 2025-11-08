@@ -6,28 +6,40 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body { font-family: "Segoe UI", Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; color: #222; }
-    #nav { background: #283593; padding: 1em; }
+    #nav { background: #283593; padding: 1em; position: sticky; top: 0; z-index: 100; }
     #nav a { color: #fff; margin-right: 2em; text-decoration: none; font-weight: bold; }
     #nav a:hover { text-decoration: underline; }
-    .container { max-width: 900px; margin: 24px auto 60px auto; background: #fff; border-radius: 8px; box-shadow: 0 0 24px rgba(0,0,0,0.03); padding: 2em; }
-    h1, h2 { color: #283593; }
+    .container { max-width: 1100px; margin: 24px auto 60px auto; background: #fff; border-radius: 8px; box-shadow: 0 0 24px rgba(0,0,0,0.03); padding: 2em; }
+    h1, h2, h3 { color: #283593; }
+    h3 { margin-top: 2em; border-bottom: 2px solid #e3eafc; padding-bottom: 0.5em; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 2em; }
-    th, td { border: 1px solid #bbb; padding: 8px 12px; background: #fafafe; text-align: left; }
+    th, td { border: 1px solid #bbb; padding: 8px 12px; background: #fafafe; text-align: left; vertical-align: top; }
     th { background: #e3eafc; color: #111; }
-    code, .endpoint { background: #f4f6fa; padding: 1px 4px; border-radius: 4px; }
-    .method { font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+    code, .endpoint { background: #f4f6fa; padding: 1px 4px; border-radius: 4px; font-family: 'Courier New', monospace; }
+    .method { font-weight: bold; padding: 2px 6px; border-radius: 4px; display: inline-block; min-width: 60px; text-align: center; }
     .GET { background: #dcedc8; color: #35581a; }
     .POST { background: #fce4ec; color: #ad1457; }
     .PATCH { background: #e3f2fd; color: #1565c0; }
     .DELETE { background: #ffebee; color: #b71c1c; }
     .desc { color: #444; }
+    .schema-section { background: #f9f9fc; padding: 1.5em; border-radius: 6px; margin: 1em 0; border-left: 4px solid #283593; }
+    .property { margin: 0.5em 0; }
+    .property-name { font-weight: bold; color: #283593; font-family: 'Courier New', monospace; }
+    .property-type { color: #666; font-style: italic; }
+    .property-desc { color: #444; margin-left: 1em; }
+    .required { color: #d32f2f; font-size: 0.85em; font-weight: bold; }
+    .optional { color: #388e3c; font-size: 0.85em; }
     footer { margin: 32px 0 0 0; text-align: center; font-size: 0.95em; color: #777; }
     .anchor { display: block; position: relative; top: -90px; visibility: hidden; }
+    .param-table { margin: 1em 0; }
+    .param-table th { background: #f0f0f5; }
   </style>
 </head>
 <body>
 
   <div id="nav">
+    <a href="#overview">Overview</a>
+    <a href="#models">Data Models</a>
     <a href="#students">Students</a>
     <a href="#teachers">Teachers</a>
     <a href="#classes">Classes</a>
@@ -38,105 +50,778 @@
   </div>
 
   <div class="container">
-    <h1>School Portal API Documentation</h1>
+    <span class="anchor" id="overview"></span>
+    <h1>SLIMS API Documentation</h1>
     <p>
-      RESTful APIs to manage schools, users, classes, subjects, and more.<br>Example base URL: <code>https://your-domain/api/</code>
+      Comprehensive RESTful API documentation for managing schools, users, classes, subjects, notices, and complaints.<br>
     </p>
 
+    <!-- Added comprehensive data models section -->
+    <span class="anchor" id="models"></span>
+    <h2>Data Models</h2>
+    <p>This section describes all database schemas, their properties, and data types used throughout the API.</p>
+
+    <h3>Student Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>student</code></p>
+      <p><strong>Description:</strong> Represents a student enrolled in a school with personal information, academic records, and attendance tracking.</p>
+      
+      <div class="property">
+        <span class="property-name">name</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Full name of the student</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">rollNum</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Unique roll number for the student (used for login)</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">password</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Hashed password for authentication</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">sclassName</span> 
+        <span class="property-type">(ObjectId → sclass)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the class the student belongs to</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">school</span> 
+        <span class="property-type">(ObjectId → admin)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the school/admin</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">role</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Default: "Student"</span>
+        <div class="property-desc">User role identifier</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">email</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Student's email address</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">phone</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Contact phone number</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">address</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Residential address</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">profilePicture</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">URL to profile picture</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">dateOfBirth</span> 
+        <span class="property-type">(Date)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Student's date of birth</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">examResult</span> 
+        <span class="property-type">(Array of Objects)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Array of exam results with subject references and marks obtained</div>
+        <div class="property-desc" style="margin-left: 2em;">
+          • <code>subName</code> (ObjectId → subject): Subject reference<br>
+          • <code>marksObtained</code> (Number): Marks scored (default: 0)
+        </div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">attendance</span> 
+        <span class="property-type">(Array of Objects)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Attendance records for the student</div>
+        <div class="property-desc" style="margin-left: 2em;">
+          • <code>date</code> (Date, required): Date of attendance<br>
+          • <code>status</code> (String, required): "Present" or "Absent"<br>
+          • <code>subName</code> (ObjectId → subject, required): Subject reference
+        </div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">notificationPreferences</span> 
+        <span class="property-type">(Object)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Notification settings</div>
+        <div class="property-desc" style="margin-left: 2em;">
+          • <code>email</code> (Boolean, default: true)<br>
+          • <code>sms</code> (Boolean, default: false)
+        </div>
+      </div>
+    </div>
+
+    <h3>Teacher Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>teacher</code></p>
+      <p><strong>Description:</strong> Represents a teacher with assigned subjects, classes, and attendance tracking capabilities.</p>
+      
+      <div class="property">
+        <span class="property-name">name</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Full name of the teacher</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">email</span> 
+        <span class="property-type">(String, unique)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Unique email address (used for login)</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">password</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Hashed password for authentication</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">role</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Default: "Teacher"</span>
+        <div class="property-desc">User role identifier</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">school</span> 
+        <span class="property-type">(ObjectId → admin)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the school/admin</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">teachSubject</span> 
+        <span class="property-type">(ObjectId → subject)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Subject assigned to the teacher</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">teachSclass</span> 
+        <span class="property-type">(ObjectId → sclass)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Class assigned to the teacher</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">attendance</span> 
+        <span class="property-type">(Array of Objects)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Teacher's attendance records</div>
+        <div class="property-desc" style="margin-left: 2em;">
+          • <code>date</code> (Date, required): Date of attendance<br>
+          • <code>presentCount</code> (String): Number of students present<br>
+          • <code>absentCount</code> (String): Number of students absent
+        </div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">phone</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Contact phone number</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">address</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Residential address</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">profilePicture</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">URL to profile picture</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">dateOfBirth</span> 
+        <span class="property-type">(Date)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Teacher's date of birth</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">notificationPreferences</span> 
+        <span class="property-type">(Object)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Notification settings (same structure as Student)</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">timestamps</span> 
+        <span class="property-type">(Auto-generated)</span>
+        <div class="property-desc">Automatically adds createdAt and updatedAt fields</div>
+      </div>
+    </div>
+
+    <h3>Admin Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>admin</code></p>
+      <p><strong>Description:</strong> Represents a school administrator with full management capabilities.</p>
+      
+      <div class="property">
+        <span class="property-name">name</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Full name of the administrator</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">email</span> 
+        <span class="property-type">(String, unique)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Unique email address (used for login)</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">password</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Hashed password for authentication</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">role</span> 
+        <span class="property-type">(String)</span> 
+        <span class="optional">Default: "Admin"</span>
+        <div class="property-desc">User role identifier</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">schoolName</span> 
+        <span class="property-type">(String, unique)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Unique name of the school</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">phone, address, profilePicture, dateOfBirth, notificationPreferences</span>
+        <div class="property-desc">Same as Student/Teacher models</div>
+      </div>
+    </div>
+
+    <h3>Class (sclass) Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>sclass</code></p>
+      <p><strong>Description:</strong> Represents a class/grade in the school system.</p>
+      
+      <div class="property">
+        <span class="property-name">sclassName</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Name of the class (e.g., "Grade 10A", "Class 5B")</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">school</span> 
+        <span class="property-type">(ObjectId → admin)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the school/admin</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">timestamps</span> 
+        <span class="property-type">(Auto-generated)</span>
+        <div class="property-desc">Automatically adds createdAt and updatedAt fields</div>
+      </div>
+    </div>
+
+    <h3>Subject Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>subject</code></p>
+      <p><strong>Description:</strong> Represents a subject taught in a specific class with teacher assignment.</p>
+      
+      <div class="property">
+        <span class="property-name">subName</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Name of the subject (e.g., "Mathematics", "English")</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">subCode</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Unique subject code (e.g., "MATH101")</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">sessions</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Number of sessions/periods per week</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">sclassName</span> 
+        <span class="property-type">(ObjectId → sclass)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the class this subject belongs to</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">school</span> 
+        <span class="property-type">(ObjectId → admin)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Reference to the school/admin</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">teacher</span> 
+        <span class="property-type">(ObjectId → teacher)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Reference to the assigned teacher</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">timestamps</span> 
+        <span class="property-type">(Auto-generated)</span>
+        <div class="property-desc">Automatically adds createdAt and updatedAt fields</div>
+      </div>
+    </div>
+
+    <h3>Notice Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>notice</code></p>
+      <p><strong>Description:</strong> Represents announcements/notices created by admin with read tracking for students and teachers.</p>
+      
+      <div class="property">
+        <span class="property-name">title</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Title of the notice</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">details</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Detailed content of the notice</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">date</span> 
+        <span class="property-type">(Date)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Date when the notice was created</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">school</span> 
+        <span class="property-type">(ObjectId → admin)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Reference to the school/admin</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">readBy</span> 
+        <span class="property-type">(Array of Objects)</span> 
+        <span class="optional">Optional</span>
+        <div class="property-desc">Tracks which users have read the notice</div>
+        <div class="property-desc" style="margin-left: 2em;">
+          • <code>userId</code> (ObjectId): Reference to student or teacher<br>
+          • <code>userType</code> (String): "student" or "teacher"<br>
+          • <code>readAt</code> (Date, default: now): Timestamp when marked as read
+        </div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">timestamps</span> 
+        <span class="property-type">(Auto-generated)</span>
+        <div class="property-desc">Automatically adds createdAt and updatedAt fields</div>
+      </div>
+    </div>
+
+    <h3>Complain Model</h3>
+    <div class="schema-section">
+      <p><strong>Collection:</strong> <code>complain</code></p>
+      <p><strong>Description:</strong> Represents complaints submitted by students or teachers with status tracking.</p>
+      
+      <div class="property">
+        <span class="property-name">user</span> 
+        <span class="property-type">(ObjectId → student)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the student who created the complaint (can also be teacher)</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">date</span> 
+        <span class="property-type">(Date)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Date when the complaint was submitted</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">complaint</span> 
+        <span class="property-type">(String)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Detailed description of the complaint</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">school</span> 
+        <span class="property-type">(ObjectId → admin)</span> 
+        <span class="required">REQUIRED</span>
+        <div class="property-desc">Reference to the school/admin</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">status</span> 
+        <span class="property-type">(String, enum)</span> 
+        <span class="optional">Default: "pending"</span>
+        <div class="property-desc">Current status of the complaint: "pending" or "resolved"</div>
+      </div>
+      
+      <div class="property">
+        <span class="property-name">timestamps</span> 
+        <span class="property-type">(Auto-generated)</span>
+        <div class="property-desc">Automatically adds createdAt and updatedAt fields</div>
+      </div>
+    </div>
+
+    <!-- Enhanced Student APIs with detailed input/output documentation -->
     <span class="anchor" id="students"></span>
     <h2>Student APIs</h2>
+    
+    <h3>POST /student/register</h3>
+    <p><strong>Description:</strong> Register a new student in the system</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>name</td><td>String</td><td>Yes</td><td>Full name of the student</td></tr>
+      <tr><td>rollNum</td><td>String</td><td>Yes</td><td>Unique roll number (used for login)</td></tr>
+      <tr><td>password</td><td>String</td><td>Yes</td><td>Password for authentication</td></tr>
+      <tr><td>sclassName</td><td>ObjectId</td><td>Yes</td><td>Class ID the student belongs to</td></tr>
+      <tr><td>school</td><td>ObjectId</td><td>Yes</td><td>School/Admin ID</td></tr>
+      <tr><td>email</td><td>String</td><td>No</td><td>Student's email address</td></tr>
+      <tr><td>phone</td><td>String</td><td>No</td><td>Contact phone number</td></tr>
+      <tr><td>address</td><td>String</td><td>No</td><td>Residential address</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns the created student object with all fields including generated _id</p>
+
+    <h3>POST /student/login</h3>
+    <p><strong>Description:</strong> Authenticate a student and return their details</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>rollNum</td><td>String</td><td>Yes</td><td>Student's roll number</td></tr>
+      <tr><td>password</td><td>String</td><td>Yes</td><td>Student's password</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns student object with populated class and school details, or error message if credentials are invalid</p>
+
+    <h3>GET /student/:schoolId</h3>
+    <p><strong>Description:</strong> List all students belonging to a specific school</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>schoolId</td><td>ObjectId (URL param)</td><td>Yes</td><td>School/Admin ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns array of student objects with populated class names, or message if no students found</p>
+
+    <h3>GET /student/detail/:id</h3>
+    <p><strong>Description:</strong> Get detailed information about a specific student</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Student ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns student object with populated class, school, and exam results with subject details</p>
+
+    <h3>PATCH /student/result/:id</h3>
+    <p><strong>Description:</strong> Add or update exam results for a student</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Student ID</td></tr>
+      <tr><td>subName</td><td>ObjectId</td><td>Yes</td><td>Subject ID</td></tr>
+      <tr><td>marksObtained</td><td>Number</td><td>Yes</td><td>Marks scored in the exam</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns updated student object with new exam result added</p>
+
+    <h3>PATCH /student/attendance/:id</h3>
+    <p><strong>Description:</strong> Add or update attendance record for a student</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Student ID</td></tr>
+      <tr><td>date</td><td>Date</td><td>Yes</td><td>Date of attendance</td></tr>
+      <tr><td>status</td><td>String</td><td>Yes</td><td>"Present" or "Absent"</td></tr>
+      <tr><td>subName</td><td>ObjectId</td><td>Yes</td><td>Subject ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns updated student object with new attendance record</p>
+
     <table>
       <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/student/register</code></td><td class="desc">Register a new student</td></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/student/login</code></td><td class="desc">Student login</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/student/:schoolId</code></td><td class="desc">List all students of a school</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/student/detail/:id</code></td><td class="desc">Get student details by ID</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/student/:id</code></td><td class="desc">Delete student by ID</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/student/all/:schoolId</code></td><td class="desc">Delete all students by school</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/student/byclass/:id</code></td><td class="desc">Delete students by class</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/:id</code></td><td class="desc">Update a student's info</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/result/:id</code></td><td class="desc">Add/update student exam result</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/attendance/:id</code></td><td class="desc">Add/update student attendance</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/clear/bySubject/:id</code></td><td class="desc">Clear attendance by subject</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/clear/all/:id</code></td><td class="desc">Clear all attendance by school</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/:id</code></td><td class="desc">Update student's personal information</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/clear/bySubject/:id</code></td><td class="desc">Clear attendance records for a specific subject</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/clear/all/:id</code></td><td class="desc">Clear all attendance records</td></tr>
       <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/remove/bySubject/:id</code></td><td class="desc">Remove attendance by subject</td></tr>
       <tr><td><span class="method PATCH">PATCH</span></td><td><code>/student/remove/all/:id</code></td><td class="desc">Remove all attendance</td></tr>
     </table>
 
+    <!-- Enhanced Teacher APIs with detailed input/output documentation -->
     <span class="anchor" id="teachers"></span>
     <h2>Teacher APIs</h2>
+    
+    <h3>POST /teacher/register</h3>
+    <p><strong>Description:</strong> Register a new teacher in the system</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>name</td><td>String</td><td>Yes</td><td>Full name of the teacher</td></tr>
+      <tr><td>email</td><td>String</td><td>Yes</td><td>Unique email address (used for login)</td></tr>
+      <tr><td>password</td><td>String</td><td>Yes</td><td>Password for authentication</td></tr>
+      <tr><td>school</td><td>ObjectId</td><td>Yes</td><td>School/Admin ID</td></tr>
+      <tr><td>teachSclass</td><td>ObjectId</td><td>Yes</td><td>Class ID assigned to teacher</td></tr>
+      <tr><td>teachSubject</td><td>ObjectId</td><td>No</td><td>Subject ID assigned to teacher</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns the created teacher object with all fields</p>
+
+    <h3>POST /teacher/login</h3>
+    <p><strong>Description:</strong> Authenticate a teacher and return their details</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>email</td><td>String</td><td>Yes</td><td>Teacher's email address</td></tr>
+      <tr><td>password</td><td>String</td><td>Yes</td><td>Teacher's password</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns teacher object with populated class and subject details</p>
+
+    <h3>PATCH /teacher/updateSubject</h3>
+    <p><strong>Description:</strong> Update the subject assigned to a teacher</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>teacherId</td><td>ObjectId</td><td>Yes</td><td>Teacher ID</td></tr>
+      <tr><td>teachSubject</td><td>ObjectId</td><td>Yes</td><td>New subject ID to assign</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns updated teacher object</p>
+
     <table>
       <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/teacher/register</code></td><td class="desc">Register a new teacher</td></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/teacher/login</code></td><td class="desc">Teacher login</td></tr>
       <tr><td><span class="method GET">GET</span></td><td><code>/teacher/:schoolId</code></td><td class="desc">List all teachers of a school</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/teacher/detail/:id</code></td><td class="desc">Get teacher details by ID</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/teacher/updateSubject</code></td><td class="desc">Update teacher's subject</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/teacher/attendance/:id</code></td><td class="desc">Add/update teacher attendance</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/teacher/detail/:id</code></td><td class="desc">Get teacher details by ID with populated references</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/teacher/attendance/:id</code></td><td class="desc">Add/update teacher attendance record</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/teacher/:id</code></td><td class="desc">Delete teacher by ID</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/teacher/all/:schoolId</code></td><td class="desc">Delete all teachers by school</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/teacher/byclass/:id</code></td><td class="desc">Delete teachers by class</td></tr>
     </table>
 
+    <!-- Enhanced Class APIs with detailed input/output documentation -->
     <span class="anchor" id="classes"></span>
     <h2>Class APIs</h2>
+    
+    <h3>POST /class/</h3>
+    <p><strong>Description:</strong> Create a new class in the school</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>sclassName</td><td>String</td><td>Yes</td><td>Name of the class (e.g., "Grade 10A")</td></tr>
+      <tr><td>school</td><td>ObjectId</td><td>Yes</td><td>School/Admin ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns the created class object</p>
+
+    <h3>GET /class/students/:id</h3>
+    <p><strong>Description:</strong> Get all students enrolled in a specific class</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Class ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns array of student objects belonging to the class</p>
+
     <table>
       <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/class/</code></td><td class="desc">Create a class</td></tr>
       <tr><td><span class="method GET">GET</span></td><td><code>/class/all/:schoolId</code></td><td class="desc">List all classes by school</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/class/detail/:id</code></td><td class="desc">Get class details</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/class/students/:id</code></td><td class="desc">Get students for a class</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/class/detail/:id</code></td><td class="desc">Get class details with populated school reference</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/class/:id</code></td><td class="desc">Delete class by ID</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/class/all/:schoolId</code></td><td class="desc">Delete all classes by school</td></tr>
     </table>
 
+    <!-- Enhanced Subject APIs with detailed input/output documentation -->
     <span class="anchor" id="subjects"></span>
     <h2>Subject APIs</h2>
+    
+    <h3>POST /subject/</h3>
+    <p><strong>Description:</strong> Create one or multiple subjects for a class</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>subName</td><td>String</td><td>Yes</td><td>Name of the subject</td></tr>
+      <tr><td>subCode</td><td>String</td><td>Yes</td><td>Unique subject code</td></tr>
+      <tr><td>sessions</td><td>String</td><td>Yes</td><td>Number of sessions per week</td></tr>
+      <tr><td>sclassName</td><td>ObjectId</td><td>Yes</td><td>Class ID</td></tr>
+      <tr><td>school</td><td>ObjectId</td><td>Yes</td><td>School/Admin ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns the created subject object(s)</p>
+
+    <h3>GET /subject/free/:id</h3>
+    <p><strong>Description:</strong> Get subjects in a class that don't have an assigned teacher</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Class ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns array of subject objects without teacher assignment</p>
+
     <table>
       <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/subject/</code></td><td class="desc">Create subject(s)</td></tr>
       <tr><td><span class="method GET">GET</span></td><td><code>/subject/all/:schoolId</code></td><td class="desc">List all subjects by school</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/subject/byclass/:id</code></td><td class="desc">Get subjects for a class</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/subject/free/:id</code></td><td class="desc">Get unassigned subjects for class</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/subject/detail/:id</code></td><td class="desc">Get subject details</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/subject/byclass/:id</code></td><td class="desc">Get all subjects for a specific class</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/subject/detail/:id</code></td><td class="desc">Get subject details with populated references</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/:id</code></td><td class="desc">Delete subject by ID</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/all/:schoolId</code></td><td class="desc">Delete all subjects by school</td></tr>
-      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/byclass/:id</code></td><td class="desc">Delete subjects by class</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/subject/byclass/:id</code></td><td class="desc">Delete all subjects by class</td></tr>
     </table>
 
+    <!-- Enhanced Admin APIs with detailed input/output documentation -->
     <span class="anchor" id="admins"></span>
     <h2>Admin APIs</h2>
+    
+    <h3>POST /admin/register</h3>
+    <p><strong>Description:</strong> Register a new school with an admin account</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>name</td><td>String</td><td>Yes</td><td>Full name of the administrator</td></tr>
+      <tr><td>email</td><td>String</td><td>Yes</td><td>Unique email address (used for login)</td></tr>
+      <tr><td>password</td><td>String</td><td>Yes</td><td>Password for authentication</td></tr>
+      <tr><td>schoolName</td><td>String</td><td>Yes</td><td>Unique name of the school</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns the created admin object representing the school</p>
+
+    <h3>POST /admin/login</h3>
+    <p><strong>Description:</strong> Authenticate an admin and return their details</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>email</td><td>String</td><td>Yes</td><td>Admin's email address</td></tr>
+      <tr><td>password</td><td>String</td><td>Yes</td><td>Admin's password</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns admin object with school details</p>
+
     <table>
       <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/admin/register</code></td><td class="desc">Register new school/admin</td></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/admin/login</code></td><td class="desc">Admin login</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/admin/detail/:id</code></td><td class="desc">Get admin details</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/admin/:id</code></td><td class="desc">Update admin details</td></tr>
-      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/admin/:id</code></td><td class="desc">Delete admin and school</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/admin/detail/:id</code></td><td class="desc">Get admin details by ID</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/admin/:id</code></td><td class="desc">Update admin profile information</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/admin/:id</code></td><td class="desc">Delete admin and associated school data</td></tr>
     </table>
 
+    <!-- Enhanced Notice APIs with detailed input/output documentation including new read/unread functionality -->
     <span class="anchor" id="notices"></span>
     <h2>Notice APIs</h2>
+    
+    <h3>POST /notice/</h3>
+    <p><strong>Description:</strong> Create a new notice/announcement (Admin only)</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>title</td><td>String</td><td>Yes</td><td>Title of the notice</td></tr>
+      <tr><td>details</td><td>String</td><td>Yes</td><td>Detailed content of the notice</td></tr>
+      <tr><td>date</td><td>Date</td><td>Yes</td><td>Date of the notice</td></tr>
+      <tr><td>adminID</td><td>ObjectId</td><td>Yes</td><td>Admin/School ID (automatically set as school field)</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns the created notice object</p>
+
+    <h3>GET /notice/all/:schoolId</h3>
+    <p><strong>Description:</strong> Get all notices for a specific school</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>schoolId</td><td>ObjectId (URL param)</td><td>Yes</td><td>School/Admin ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns array of notice objects with readBy tracking information</p>
+
+    <h3>PATCH /notice/read/:id</h3>
+    <p><strong>Description:</strong> Mark a notice as read by a student or teacher</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Notice ID</td></tr>
+      <tr><td>userId</td><td>ObjectId</td><td>Yes</td><td>ID of the user marking as read</td></tr>
+      <tr><td>userType</td><td>String</td><td>Yes</td><td>"student" or "teacher"</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns updated notice object with user added to readBy array</p>
+
+    <h3>PATCH /notice/unread/:id</h3>
+    <p><strong>Description:</strong> Unmark a notice as read (remove from readBy list)</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Notice ID</td></tr>
+      <tr><td>userId</td><td>ObjectId</td><td>Yes</td><td>ID of the user unmarking as read</td></tr>
+      <tr><td>userType</td><td>String</td><td>Yes</td><td>"student" or "teacher"</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns updated notice object with user removed from readBy array</p>
+
     <table>
       <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/notice/</code></td><td class="desc">Create a notice</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/notice/all/:schoolId</code></td><td class="desc">List all notices by school</td></tr>
-      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/notice/:id</code></td><td class="desc">Update a notice</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td><code>/notice/:id</code></td><td class="desc">Update notice content (title, details, date)</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/notice/:id</code></td><td class="desc">Delete notice by ID</td></tr>
       <tr><td><span class="method DELETE">DELETE</span></td><td><code>/notice/all/:schoolId</code></td><td class="desc">Delete all notices by school</td></tr>
     </table>
 
+    <!-- Enhanced Complain APIs with detailed input/output documentation including new status update functionality -->
     <span class="anchor" id="complains"></span>
     <h2>Complain APIs</h2>
-    <table>
-      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
-      <tr><td><span class="method POST">POST</span></td><td><code>/complain/</code></td><td class="desc">Create a complaint</td></tr>
-      <tr><td><span class="method GET">GET</span></td><td><code>/complain/all/:schoolId</code></td><td class="desc">List all complaints by school</td></tr>
+    
+    <h3>POST /complain/</h3>
+    <p><strong>Description:</strong> Create a new complaint (Student or Teacher)</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>user</td><td>ObjectId</td><td>Yes</td><td>ID of the student or teacher submitting complaint</td></tr>
+      <tr><td>date</td><td>Date</td><td>Yes</td><td>Date of the complaint</td></tr>
+      <tr><td>complaint</td><td>String</td><td>Yes</td><td>Detailed description of the complaint</td></tr>
+      <tr><td>school</td><td>ObjectId</td><td>Yes</td><td>School/Admin ID</td></tr>
     </table>
+    <p><strong>Response:</strong> Returns the created complaint object with default status "pending"</p>
+
+    <h3>GET /complain/all/:schoolId</h3>
+    <p><strong>Description:</strong> Get all complaints for a specific school (Admin view)</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>schoolId</td><td>ObjectId (URL param)</td><td>Yes</td><td>School/Admin ID</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns array of complaint objects with populated user names and status</p>
+
+    <h3>GET /complain/user/:id</h3>
+    <p><strong>Description:</strong> Get all complaints submitted by a specific user (Student or Teacher view)</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>User ID (student or teacher)</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns array of complaint objects created by the user with current status</p>
+
+    <h3>PATCH /complain/status/:id</h3>
+    <p><strong>Description:</strong> Update the status of a complaint (Admin only)</p>
+    <table class="param-table">
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>id</td><td>ObjectId (URL param)</td><td>Yes</td><td>Complaint ID</td></tr>
+      <tr><td>status</td><td>String</td><td>Yes</td><td>"pending" or "resolved"</td></tr>
+    </table>
+    <p><strong>Response:</strong> Returns updated complaint object with new status and populated user name</p>
+    <p><strong>Error:</strong> Returns 400 error if status is not "pending" or "resolved"</p>
 
     <footer>
       <hr>
-      <div>&copy; 2025 School Portal API Docs &middot; </div>
+      <div>&copy; 2025 SLIMS API Documentation</div>
+      <div style="margin-top: 8px; font-size: 0.9em;">Complete API reference with data models, endpoints, and parameter specifications</div>
     </footer>
   </div>
 
