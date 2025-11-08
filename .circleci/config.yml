@@ -1,0 +1,74 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@6.2.0
+
+jobs:
+  build_and_test:
+    docker:
+      - image: cimg/node:20.11   # ✅ Node 20 environment
+    working_directory: ~/project
+
+    steps:
+      # 🧱 Checkout code
+      - checkout
+
+      # ===========================
+      # 🔹 BACKEND PHASE
+      # ===========================
+
+      - run:
+          name: Install Backend Dependencies
+          command: |
+            cd backend
+            npm install
+
+      - run:
+          name: Run Backend Tests (Mock DB)
+          command: |
+            cd backend
+            export NODE_ENV=test
+            export MONGO_URL="mock://memory-db"
+            npm test -- --runInBand --detectOpenHandles --testTimeout=15000
+
+      # ===========================
+      # 🔹 FRONTEND PHASE
+      # ===========================
+
+      - run:
+          name: Install Frontend Dependencies
+          command: |
+            cd frontend
+            npm install
+
+      - run:
+          name: Prepare Frontend Test Environment
+          command: |
+            sudo apt-get update && sudo apt-get install -y rsync
+            cd frontend
+            # Add any additional setup commands here
+
+      - run:
+          name: Run Frontend Tests
+          command: |
+            cd frontend
+            npm test -- --watchAll=false --ci
+
+      - run:
+          name: Build Frontend
+          command: |
+            cd frontend
+            CI=false npm run build
+
+      # ===========================
+      # ✅ STORE ARTIFACTS (optional)
+      # ===========================
+      - store_artifacts:
+          path: frontend/build
+          destination: frontend_build
+
+workflows:
+  version: 2
+  test_and_build:
+    jobs:
+      - build_and_test

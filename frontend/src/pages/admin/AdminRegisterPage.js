@@ -5,8 +5,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Container, Row, Col, Form, Button, InputGroup, Spinner, Card } from "react-bootstrap"
 import { registerUser } from "../../redux/userRelated/userHandle"
-import bgpic from "frontend/assets/designlogin.jpg"
-frontend/assets/designlogin.jpg
+import bgpic from "../../assets/designlogin.jpg"
+
 const AdminRegisterPage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
