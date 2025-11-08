@@ -9,36 +9,54 @@ const app = express();
 const Routes = require("./routes/route.js");
 
 const PORT = process.env.PORT || 5001;
+const CLIENT_URL = process.env.CLIENT_URL || "https://ses-project-frontend.onrender.com";
 
-console.log("[v0] Environment variables loaded:");
-console.log("[v0] PORT:", process.env.PORT);
-console.log("[v0] MONGO_URL:", process.env.MONGO_URL ? "Set (hidden for security)" : "NOT SET");
+console.log("[v3] Environment variables loaded:");
+console.log("[v3] PORT:", process.env.PORT);
+console.log("[v3] MONGO_URL:", process.env.MONGO_URL ? "Set (hidden)" : "NOT SET");
+console.log("[v3] CLIENT_URL:", CLIENT_URL);
 
 app.use(express.json({ limit: "10mb" }));
-app.use(cors());
-
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
-  .then(() => {
+);
+
+app.get("/", (req, res) => {
+  res.status(200).send("✅ Backend is running successfully!");
+});
+
+app.use("/api", Routes);
+
+async function connectDB() {
+  if (process.env.NODE_ENV === "test") {
+    console.log("[v3] Starting in-memory MongoDB for tests...");
+    const { MongoMemoryServer } = require("mongodb-memory-server");
+    const mongod = await MongoMemoryServer.create();
+    const uri = mongod.getUri();
+    await mongoose.connect(uri);
+    console.log("[v3] In-memory MongoDB connected");
+    return mongod; // return reference for cleanup
+  } else {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to MongoDB successfully");
-  })
-  .catch((err) => {
-    console.log("MongoDB connection failed:", err.message);
-    console.log("[v0] Attempted connection string format:", process.env.MONGO_URL ? "Valid format" : "UNDEFINED");
-    console.log("Make sure MongoDB is running locally or update MONGO_URL in .env file");
-  });
-
-app.use("/", Routes);
-
-// ✅ Export app for testing
-module.exports = app;
-
-// ✅ Only start server when not testing
-if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
-    console.log(`Server started at port no. ${PORT}`);
-  });
+    return null;
+  }
 }
+
+// ✅ Only connect and start server when not in test mode
+if (process.env.NODE_ENV !== "test") {
+  connectDB().catch((err) => {
+    console.log("MongoDB connection failed:", err.message);
+  });
+
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+}
+
+module.exports = { app, connectDB };
