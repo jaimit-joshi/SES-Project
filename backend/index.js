@@ -1,56 +1,51 @@
+// ✅ index.js
+require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const Routes = require("./routes/route.js");
-
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+app.use(express.json());
 
-console.log("[v8] Environment variables loaded:");
-console.log("[v8] PORT:", PORT);
-console.log("[v8] NODE_ENV:", process.env.NODE_ENV);
-console.log("[v8] CLIENT_URL:", process.env.CLIENT_URL || "Not set");
+// (Your routes)
+const studentRoutes = require("./routes/studentRoutes");
+app.use("/", studentRoutes);
 
-app.use(express.json({ limit: "10mb" }));
-app.use(cors());
-app.use("/", Routes);
-
+// -------------------------
+// 🔹 Connection logic
+// -------------------------
 const connectDB = async () => {
-  if (process.env.NODE_ENV === "test") {
-    console.log("[v8] Mocking MongoDB connection in test mode...");
-
-    // Safe global mock for Mongoose so tests won’t crash
-    mongoose.connect = async () => true;
-    mongoose.connection.readyState = 1;
-    mongoose.model = (name, schema) => ({
-      create: jest.fn().mockResolvedValue({ _id: "mockId", ...schema }),
-      find: jest.fn().mockResolvedValue([]),
-      findOne: jest.fn().mockResolvedValue(null),
-      findById: jest.fn().mockResolvedValue(null),
-      updateOne: jest.fn().mockResolvedValue({ modifiedCount: 1 }),
-      deleteOne: jest.fn().mockResolvedValue({ deletedCount: 1 }),
-    });
-    return;
-  }
+  console.log("[v8] Environment variables loaded:");
+  console.log("[v8] PORT:", process.env.PORT);
+  console.log("[v8] NODE_ENV:", process.env.NODE_ENV);
+  console.log("[v8] CLIENT_URL:", process.env.CLIENT_URL || "Not set");
 
   try {
-    await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("[v8] MongoDB connected successfully.");
+    if (process.env.NODE_ENV === "test") {
+      console.log("[v8] Mocking MongoDB connection in test mode...");
+      // Skip actual DB
+      return null;
+    }
+
+    const mongoURL = process.env.MONGO_URL;
+    if (!mongoURL) throw new Error("Missing MONGO_URL");
+
+    await mongoose.connect(mongoURL);
+    console.log("[v8] MongoDB connected successfully!");
+    return mongoose.connection;
   } catch (err) {
     console.error("[v8] MongoDB connection failed:", err.message);
   }
 };
 
-module.exports = { app, connectDB };
-
+// -------------------------
+// 🔹 Start server only if not in test
+// -------------------------
 if (process.env.NODE_ENV !== "test") {
-  connectDB().then(() =>
-    app.listen(PORT, () => console.log(`Server started at port no. ${PORT}`))
-  );
+  const PORT = process.env.PORT || 5001;
+  connectDB().then(() => {
+    app.listen(PORT, () => console.log(`[v8] Server running on port ${PORT}`));
+  });
 }
+
+// ✅ Export app for testing
+module.exports = { app, connectDB };
