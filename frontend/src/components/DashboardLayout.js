@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { authLogout } from "../redux/userRelated/userSlice"
+import ThemeToggle from "./ThemeToggle"
 
 const DashboardLayout = ({ children, role }) => {
   const location = useLocation()
@@ -185,24 +186,28 @@ const DashboardLayout = ({ children, role }) => {
 
           <h1 className="topbar-title">{role} Dashboard</h1>
 
-          <div className="user-dropdown" ref={dropdownRef}>
-            <div className="user-dropdown-toggle" onClick={toggleDropdown}>
-              <div className="user-avatar" style={{ backgroundColor: "#4361ee" }}>
-                {currentUser?.name?.charAt(0)}
-              </div>
-              <span className="user-name d-none d-md-block">{currentUser?.name}</span>
-              <i className={`bi ${dropdownOpen ? "bi-chevron-up" : "bi-chevron-down"} d-none d-md-block`}></i>
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <ThemeToggle />
 
-            <div className={`user-dropdown-menu ${dropdownOpen ? "show" : ""}`}>
-              <Link to={`/${role}/profile`} className="user-dropdown-item">
-                <i className="bi bi-person user-dropdown-icon"></i>
-                Profile
-              </Link>
-              <div className="user-dropdown-divider"></div>
-              <div className="user-dropdown-item" onClick={handleLogout}>
-                <i className="bi bi-box-arrow-right user-dropdown-icon"></i>
-                Logout
+            <div className="user-dropdown" ref={dropdownRef}>
+              <div className="user-dropdown-toggle" onClick={toggleDropdown}>
+                <div className="user-avatar" style={{ backgroundColor: "#4361ee" }}>
+                  {currentUser?.name?.charAt(0)}
+                </div>
+                <span className="user-name d-none d-md-block">{currentUser?.name}</span>
+                <i className={`bi ${dropdownOpen ? "bi-chevron-up" : "bi-chevron-down"} d-none d-md-block`}></i>
+              </div>
+
+              <div className={`user-dropdown-menu ${dropdownOpen ? "show" : ""}`}>
+                <Link to={`/${role}/profile`} className="user-dropdown-item">
+                  <i className="bi bi-person user-dropdown-icon"></i>
+                  Profile
+                </Link>
+                <div className="user-dropdown-divider"></div>
+                <div className="user-dropdown-item" onClick={handleLogout}>
+                  <i className="bi bi-box-arrow-right user-dropdown-icon"></i>
+                  Logout
+                </div>
               </div>
             </div>
           </div>
