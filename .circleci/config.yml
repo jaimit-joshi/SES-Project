@@ -19,7 +19,7 @@ jobs:
             cd backend
             npm install
 
-      # 🧪 Run backend tests (Mock DB)
+      # 🧪 Run backend tests (mock DB)
       - run:
           name: Run Backend Tests (Mock DB)
           command: |
@@ -35,21 +35,20 @@ jobs:
             cd frontend
             npm install
 
-      # ⚙️ Prepare mock /src for frontend tests
+      # ⚙️ Prepare full frontend /src folder for CRA test environment
       - run:
           name: Prepare Frontend Test Environment
           command: |
-            echo "Preparing mock /src directory for CRA tests..."
-            mkdir -p frontend/src
-            cp -r frontend/components frontend/src/ || true
-            cp -r frontend/pages frontend/src/ || true
-            cp -r frontend/redux frontend/src/ || true
-            cp -r frontend/theme frontend/src/ || true
-            cp -r frontend/assets frontend/src/ || true
-            cp frontend/App.js frontend/src/ || true
-            cp frontend/index.js frontend/src/ || true
-            cp frontend/index.css frontend/src/ || true
-            cp frontend/setupTests.js frontend/src/ || true
+            echo "🧩 Preparing full /src directory for CRA tests..."
+            cd frontend
+            mkdir -p src
+            # ✅ Copy everything from real src (recursive, preserving structure)
+            rsync -a --exclude=node_modules ./src/ ./src/
+            # ✅ Ensure key root-level files are there
+            cp App.js src/ || true
+            cp index.js src/ || true
+            cp index.css src/ || true
+            cp setupTests.js src/ || true
             echo "✅ Frontend /src directory ready for Jest!"
 
       # 🧪 Run frontend tests
@@ -59,14 +58,15 @@ jobs:
             cd frontend
             npm test -- --watchAll=false --ci
 
-      # 🧹 Cleanup mock src folder
+      # 🧹 Cleanup mock src folder (restore real repo)
       - run:
           name: Cleanup Mock Frontend Files
           command: |
-            echo "🧹 Cleaning up mock /src test directory..."
-            rm -rf frontend/src
-            git restore frontend/src || true
-            echo "✅ Restored real structure for build."
+            echo "🧹 Cleaning up temporary /src test structure..."
+            cd frontend
+            rm -rf src
+            git restore src || true
+            echo "✅ Original frontend/src restored."
 
       # 🧰 Build frontend for deployment
       - run:
