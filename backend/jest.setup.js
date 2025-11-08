@@ -1,6 +1,6 @@
 // ✅ jest.setup.js
 const mongoose = require("mongoose");
-const { app, connectDB } = require("../index");
+const { app, connectDB } = require("./index");
 
 // Before running any tests, connect to mock DB or whatever test mode specifies
 beforeAll(async () => {
