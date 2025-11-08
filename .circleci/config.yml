@@ -6,20 +6,23 @@ orbs:
 jobs:
   build_and_test:
     docker:
-      - image: cimg/node:20.11
+      - image: cimg/node:20.11   # ✅ Node 20 environment
     working_directory: ~/project
 
     steps:
+      # 🧱 Checkout code
       - checkout
 
-      # 🧱 Install backend dependencies
+      # ===========================
+      # 🔹 BACKEND PHASE
+      # ===========================
+
       - run:
           name: Install Backend Dependencies
           command: |
             cd backend
             npm install
 
-      # 🧪 Run backend tests (mock DB)
       - run:
           name: Run Backend Tests (Mock DB)
           command: |
@@ -28,52 +31,41 @@ jobs:
             export MONGO_URL="mock://memory-db"
             npm test -- --runInBand --detectOpenHandles --testTimeout=15000
 
-      # 🧱 Install frontend dependencies
+      # ===========================
+      # 🔹 FRONTEND PHASE
+      # ===========================
+
       - run:
           name: Install Frontend Dependencies
           command: |
             cd frontend
             npm install
 
-      # ⚙️ Prepare full frontend /src folder for CRA test environment
       - run:
           name: Prepare Frontend Test Environment
           command: |
-            echo "🧩 Preparing full /src directory for CRA tests..."
+            sudo apt-get update && sudo apt-get install -y rsync
             cd frontend
-            mkdir -p src
-            # ✅ Copy everything from real src (recursive, preserving structure)
-            rsync -a --exclude=node_modules ./src/ ./src/
-            # ✅ Ensure key root-level files are there
-            cp App.js src/ || true
-            cp index.js src/ || true
-            cp index.css src/ || true
-            cp setupTests.js src/ || true
-            echo "✅ Frontend /src directory ready for Jest!"
+            # Add any additional setup commands here
 
-      # 🧪 Run frontend tests
       - run:
           name: Run Frontend Tests
           command: |
             cd frontend
             npm test -- --watchAll=false --ci
 
-      # 🧹 Cleanup mock src folder (restore real repo)
-      - run:
-          name: Cleanup Mock Frontend Files
-          command: |
-            echo "🧹 Cleaning up temporary /src test structure..."
-            cd frontend
-            rm -rf src
-            git restore src || true
-            echo "✅ Original frontend/src restored."
-
-      # 🧰 Build frontend for deployment
       - run:
           name: Build Frontend
           command: |
             cd frontend
             npm run build
+
+      # ===========================
+      # ✅ STORE ARTIFACTS (optional)
+      # ===========================
+      - store_artifacts:
+          path: frontend/build
+          destination: frontend_build
 
 workflows:
   version: 2
