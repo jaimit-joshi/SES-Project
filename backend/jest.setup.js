@@ -1,10 +1,16 @@
+const mongoose = require("mongoose");
+const { connectDB } = require("../index"); // ✅ import connectDB and app here
+
 beforeAll(async () => {
-  global.__MONGOD__ = await connectDB();
+  global.__MONGOD__ = await connectDB(); // connect to mock or real DB depending on env
 });
 
 afterAll(async () => {
-  if (global.__MONGOD__) {
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
+  }
+  if (global.__MONGOD__ && global.__MONGOD__.stop) {
     await global.__MONGOD__.stop();
   }
 });
