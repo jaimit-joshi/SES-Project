@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { connectDB } = require("../index"); // ✅ import connectDB and app here
+const { connectDB } = require("./index"); // ✅ use ./ instead of ../
 
 beforeAll(async () => {
   global.__MONGOD__ = await connectDB(); // connect to mock or real DB depending on env
