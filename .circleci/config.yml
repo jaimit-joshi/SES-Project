@@ -6,7 +6,7 @@ orbs:
 jobs:
   build_and_test:
     docker:
-      - image: cimg/node:20.11  # ✅ Node 20 environment
+      - image: cimg/node:20.11  
     working_directory: ~/project
 
     steps:
@@ -35,7 +35,7 @@ jobs:
             cd frontend
             npm install
 
-      # ⚙️ Create mock /src folder for CRA-based test config
+      # ⚙️ Create mock /src folder for CRA-based tests
       - run:
           name: Prepare Frontend Tests
           command: |
@@ -58,7 +58,21 @@ jobs:
             cd frontend
             npm test -- --watchAll=false --ci
 
-      
+      # 🧹 Clean up temporary /src folder after successful tests
+      - run:
+          name: Clean Up Temporary /src Folder
+          command: |
+            echo "Cleaning up temporary /src folder..."
+            rm -rf frontend/src
+            echo "Cleaned up. Restoring original structure."
+
+      # 🏗️ Build frontend for production
+      - run:
+          name: Build Frontend
+          command: |
+            cd frontend
+            npm run build
+            echo "Frontend build completed successfully!"
 
 workflows:
   version: 2
