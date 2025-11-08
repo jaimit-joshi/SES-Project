@@ -6,7 +6,7 @@ orbs:
 jobs:
   build_and_test:
     docker:
-      - image: cimg/node:20.11  
+      - image: cimg/node:20.11
     working_directory: ~/project
 
     steps:
@@ -19,7 +19,7 @@ jobs:
             cd backend
             npm install
 
-      # 🧪 Run backend tests (mock DB)
+      # 🧪 Run backend tests (Mock DB)
       - run:
           name: Run Backend Tests (Mock DB)
           command: |
@@ -35,9 +35,9 @@ jobs:
             cd frontend
             npm install
 
-      # ⚙️ Create mock /src folder for CRA-based tests
+      # ⚙️ Prepare mock /src for frontend tests
       - run:
-          name: Prepare Frontend Tests
+          name: Prepare Frontend Test Environment
           command: |
             echo "Preparing mock /src directory for CRA tests..."
             mkdir -p frontend/src
@@ -48,8 +48,9 @@ jobs:
             cp -r frontend/assets frontend/src/ || true
             cp frontend/App.js frontend/src/ || true
             cp frontend/index.js frontend/src/ || true
+            cp frontend/index.css frontend/src/ || true
             cp frontend/setupTests.js frontend/src/ || true
-            echo "Frontend /src directory ready!"
+            echo "✅ Frontend /src directory ready for Jest!"
 
       # 🧪 Run frontend tests
       - run:
@@ -58,21 +59,21 @@ jobs:
             cd frontend
             npm test -- --watchAll=false --ci
 
-      # 🧹 Clean up temporary /src folder after successful tests
+      # 🧹 Cleanup mock src folder
       - run:
-          name: Clean Up Temporary /src Folder
+          name: Cleanup Mock Frontend Files
           command: |
-            echo "Cleaning up temporary /src folder..."
+            echo "🧹 Cleaning up mock /src test directory..."
             rm -rf frontend/src
-            echo "Cleaned up. Restoring original structure."
+            git restore frontend/src || true
+            echo "✅ Restored real structure for build."
 
-      # 🏗️ Build frontend for production
+      # 🧰 Build frontend for deployment
       - run:
           name: Build Frontend
           command: |
             cd frontend
             npm run build
-            echo "Frontend build completed successfully!"
 
 workflows:
   version: 2
