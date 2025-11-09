@@ -1,6 +1,7 @@
 const request = require("supertest");
-const app = require("../index.js");
+const app = require("../jest.setup");
 const mongoose = require("mongoose");
+
 
 describe("PUT /StudentAttendance/:id", () => {
   it("returns 404 for missing student", async () => {
