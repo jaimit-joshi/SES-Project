@@ -13,20 +13,31 @@ let mongoConnection = null;
 async function connectDB() {
   try {
     if (process.env.NODE_ENV === "test") {
-      console.log("[v14] Mock DB active — skipping real Mongo connection");
+      console.log("[v15] Mock DB active — skipping real Mongo connection");
+
+      // Prevent Mongoose from buffering operations when no real DB
+      mongoose.connect = async () => {};
+      mongoose.createConnection = () => mongoose.connection;
+      mongoose.connection.readyState = 1;
+      mongoose.connection.on = () => {};
+      mongoose.connection.close = async () => {};
+      mongoose.set("bufferCommands", false);
+
       mongoConnection = true;
       return;
     }
 
-    const mongoURI = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/school-management-system";
+    const mongoURI =
+      process.env.MONGO_URL ||
+      "mongodb://127.0.0.1:27017/school-management-system";
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     mongoConnection = mongoose.connection;
-    console.log("[v14] Mongo connected:", mongoURI);
+    console.log("[v15] Mongo connected:", mongoURI);
   } catch (err) {
-    console.error("[v14] Mongo connection error:", err.message);
+    console.error("[v15] Mongo connection error:", err.message);
   }
 }
 
@@ -35,12 +46,12 @@ try {
   const routes = require("./routes/route.js");
   app.use("/", routes);
 } catch (err) {
-  console.warn("[v14] Routes not loaded:", err.message);
+  console.warn("[v15] Routes not loaded:", err.message);
 }
 
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 5001;
-  app.listen(PORT, () => console.log(`[v14] Server running on port ${PORT}`));
+  app.listen(PORT, () => console.log(`[v15] Server running on port ${PORT}`));
 }
 
 module.exports = { app, connectDB };
