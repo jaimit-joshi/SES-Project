@@ -24,11 +24,12 @@ jobs:
             npm install
 
       - run:
-          name: Run Backend Tests (Mock DB)
+          name: Run Backend Tests
           command: |
             cd backend
             export NODE_ENV=test
-            npm test -- --runInBand --detectOpenHandles --testTimeout=20000
+            npm test
+
 
 
       # ===========================
