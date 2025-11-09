@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { addStuff } from "../../redux/userRelated/userHandle"
-import { Row, Col, Form, Button, Card, Spinner, Alert } from "react-bootstrap"
+import { getUserComplains } from "../../redux/complainRelated/complainHandle"
+import { Row, Col, Form, Button, Card, Spinner, Alert, Badge } from "react-bootstrap"
 
 const StudentComplain = () => {
   const [complaint, setComplaint] = useState("")
@@ -15,6 +16,7 @@ const StudentComplain = () => {
 
   const dispatch = useDispatch()
   const { status, currentUser, error } = useSelector((state) => state.user)
+  const { complainsList } = useSelector((state) => state.complain)
 
   const user = currentUser._id
   const school = currentUser.school._id
@@ -22,10 +24,15 @@ const StudentComplain = () => {
 
   const fields = {
     user,
+    userType: "student",
     date,
     complaint,
     school,
   }
+
+  useEffect(() => {
+    dispatch(getUserComplains(currentUser._id))
+  }, [dispatch, currentUser._id])
 
   const submitHandler = (event) => {
     event.preventDefault()
@@ -41,13 +48,14 @@ const StudentComplain = () => {
       setShowAlert(true)
       setComplaint("")
       setDate("")
+      dispatch(getUserComplains(currentUser._id))
     } else if (error) {
       setLoading(false)
       setAlertVariant("danger")
       setAlertMessage("Network Error")
       setShowAlert(true)
     }
-  }, [status, error])
+  }, [status, error, dispatch, currentUser._id])
 
   return (
     <div className="container-fluid">
@@ -96,6 +104,36 @@ const StudentComplain = () => {
               </Form>
             </Card.Body>
           </Card>
+
+          <Card className="dashboard-card mt-4">
+            <Card.Body className="p-4">
+              <h4 className="fw-bold mb-3">My Complaints</h4>
+              {complainsList && complainsList.length > 0 ? (
+                <div className="complaints-list">
+                  {complainsList.map((comp) => {
+                    const date = new Date(comp.date)
+                    const dateString =
+                      date.toString() !== "Invalid Date" ? date.toISOString().substring(0, 10) : "Invalid Date"
+                    return (
+                      <Card key={comp._id} className="mb-3 border">
+                        <Card.Body>
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <small className="text-muted">{dateString}</small>
+                            <Badge bg={comp.status === "resolved" ? "success" : "warning"}>
+                              {comp.status === "resolved" ? "Resolved" : "Pending"}
+                            </Badge>
+                          </div>
+                          <p className="mb-0">{comp.complaint}</p>
+                        </Card.Body>
+                      </Card>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text-muted text-center">No complaints submitted yet</p>
+              )}
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </div>
@@ -103,4 +141,3 @@ const StudentComplain = () => {
 }
 
 export default StudentComplain
-

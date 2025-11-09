@@ -1,29 +1,57 @@
 "use client"
 
-import { useState } from "react"
-import { Row, Col, Form, Button, Card, Spinner, Alert } from "react-bootstrap"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { getUserComplains } from "../../redux/complainRelated/complainHandle"
+import { Row, Col, Form, Button, Card, Spinner, Alert, Badge } from "react-bootstrap"
+import axios from "axios"
+
+const REACT_APP_BASE_URL = "http://localhost:5001"
 
 const TeacherComplain = () => {
   const [complaint, setComplaint] = useState("")
-  const [date, setDate] = useState("")
   const [loading, setLoading] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [alertVariant, setAlertVariant] = useState("success")
   const [alertMessage, setAlertMessage] = useState("")
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch()
+  const { currentUser } = useSelector((state) => state.user)
+  const { complainsList } = useSelector((state) => state.complain)
+
+  useEffect(() => {
+    dispatch(getUserComplains(currentUser._id))
+  }, [dispatch, currentUser._id])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      const fields = {
+        user: currentUser._id,
+        userType: "teacher",
+        date: new Date(),
+        complaint,
+        school: currentUser.school._id,
+      }
+
+      await axios.post(`${REACT_APP_BASE_URL}/ComplainCreate`, fields, {
+        headers: { "Content-Type": "application/json" },
+      })
+
       setAlertVariant("success")
       setAlertMessage("Complaint submitted successfully")
       setShowAlert(true)
       setComplaint("")
-      setDate("")
-    }, 1500)
+      dispatch(getUserComplains(currentUser._id))
+    } catch (error) {
+      setAlertVariant("danger")
+      setAlertMessage("Failed to submit complaint")
+      setShowAlert(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -41,11 +69,6 @@ const TeacherComplain = () => {
               )}
 
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Date</Form.Label>
-                  <Form.Control type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-                </Form.Group>
-
                 <Form.Group className="mb-4">
                   <Form.Label>Complaint</Form.Label>
                   <Form.Control
@@ -73,6 +96,36 @@ const TeacherComplain = () => {
               </Form>
             </Card.Body>
           </Card>
+
+          <Card className="dashboard-card mt-4">
+            <Card.Body className="p-4">
+              <h4 className="fw-bold mb-3">My Complaints</h4>
+              {complainsList && complainsList.length > 0 ? (
+                <div className="complaints-list">
+                  {complainsList.map((comp) => {
+                    const date = new Date(comp.date)
+                    const dateString =
+                      date.toString() !== "Invalid Date" ? date.toISOString().substring(0, 10) : "Invalid Date"
+                    return (
+                      <Card key={comp._id} className="mb-3 border">
+                        <Card.Body>
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <small className="text-muted">{dateString}</small>
+                            <Badge bg={comp.status === "resolved" ? "success" : "warning"}>
+                              {comp.status === "resolved" ? "Resolved" : "Pending"}
+                            </Badge>
+                          </div>
+                          <p className="mb-0">{comp.complaint}</p>
+                        </Card.Body>
+                      </Card>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text-muted text-center">No complaints submitted yet</p>
+              )}
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </div>
@@ -80,4 +133,3 @@ const TeacherComplain = () => {
 }
 
 export default TeacherComplain
-

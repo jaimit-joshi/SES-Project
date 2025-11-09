@@ -1,6 +1,7 @@
 import axios from "axios"
 import { getRequest, getSuccess, getFailed, getError } from "./noticeSlice"
-const REACT_APP_BASE_URL = "https://ses-project.onrender.com/"
+const REACT_APP_BASE_URL = "http://localhost:5001"
+
 export const getAllNotices = (id, address) => async (dispatch) => {
   dispatch(getRequest())
 
@@ -16,3 +17,30 @@ export const getAllNotices = (id, address) => async (dispatch) => {
   }
 }
 
+export const markNoticeAsRead = (noticeId, userId, userType) => async (dispatch) => {
+  try {
+    const result = await axios.put(
+      `${REACT_APP_BASE_URL}/NoticeRead/${noticeId}`,
+      { userId, userType },
+      { headers: { "Content-Type": "application/json" } },
+    )
+    return result.data
+  } catch (error) {
+    dispatch(getError(error))
+    throw error
+  }
+}
+
+export const unmarkNoticeAsRead = (noticeId, userId, userType) => async (dispatch) => {
+  try {
+    const result = await axios.put(
+      `${REACT_APP_BASE_URL}/NoticeUnread/${noticeId}`,
+      { userId, userType },
+      { headers: { "Content-Type": "application/json" } },
+    )
+    return result.data
+  } catch (error) {
+    dispatch(getError(error))
+    throw error
+  }
+}

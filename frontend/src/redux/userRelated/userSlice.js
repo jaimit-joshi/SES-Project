@@ -5,10 +5,7 @@ const getInitialDarkMode = () => {
   if (savedMode !== null) {
     return JSON.parse(savedMode)
   }
-  // Check system preference
-  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    return true
-  }
+  // Always default to light mode
   return false
 }
 

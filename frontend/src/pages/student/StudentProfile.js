@@ -3,10 +3,12 @@
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { Row, Col, Card, Button } from "react-bootstrap"
+import { useTheme } from "@mui/material"
 
 const StudentProfile = () => {
   const { currentUser } = useSelector((state) => state.user)
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const sclassName = currentUser.sclassName
   const studentSchool = currentUser.school
@@ -22,7 +24,12 @@ const StudentProfile = () => {
                   {currentUser.name.charAt(0)}
                 </div>
                 <h2 className="fw-bold">{currentUser.name}</h2>
-                <span className="badge bg-primary px-3 py-2">Student</span>
+                <span
+                  className="badge px-3 py-2"
+                  style={{ backgroundColor: theme.palette.primary.main, color: "#fff" }}
+                >
+                  Student
+                </span>
               </div>
 
               <hr className="my-4" />
@@ -35,7 +42,7 @@ const StudentProfile = () => {
 
                       <div className="mb-3">
                         <div className="d-flex align-items-center">
-                          <i className="bi bi-building text-primary me-2"></i>
+                          <i className="bi bi-building me-2" style={{ color: theme.palette.primary.main }}></i>
                           <strong className="me-2">School:</strong>
                           <span className="text-muted">{studentSchool.schoolName}</span>
                         </div>
@@ -43,7 +50,7 @@ const StudentProfile = () => {
 
                       <div className="mb-3">
                         <div className="d-flex align-items-center">
-                          <i className="bi bi-mortarboard text-primary me-2"></i>
+                          <i className="bi bi-mortarboard me-2" style={{ color: theme.palette.primary.main }}></i>
                           <strong className="me-2">Class:</strong>
                           <span className="text-muted">{sclassName.sclassName}</span>
                         </div>
@@ -51,7 +58,7 @@ const StudentProfile = () => {
 
                       <div className="mb-3">
                         <div className="d-flex align-items-center">
-                          <i className="bi bi-person-badge text-primary me-2"></i>
+                          <i className="bi bi-person-badge me-2" style={{ color: theme.palette.primary.main }}></i>
                           <strong className="me-2">Roll Number:</strong>
                           <span className="text-muted">{currentUser.rollNum}</span>
                         </div>
@@ -68,7 +75,7 @@ const StudentProfile = () => {
                       {currentUser.email && (
                         <div className="mb-3">
                           <div className="d-flex align-items-center">
-                            <i className="bi bi-envelope text-primary me-2"></i>
+                            <i className="bi bi-envelope me-2" style={{ color: theme.palette.primary.main }}></i>
                             <strong className="me-2">Email:</strong>
                             <span className="text-muted">{currentUser.email}</span>
                           </div>
@@ -78,7 +85,7 @@ const StudentProfile = () => {
                       {currentUser.phone && (
                         <div className="mb-3">
                           <div className="d-flex align-items-center">
-                            <i className="bi bi-telephone text-primary me-2"></i>
+                            <i className="bi bi-telephone me-2" style={{ color: theme.palette.primary.main }}></i>
                             <strong className="me-2">Phone:</strong>
                             <span className="text-muted">{currentUser.phone}</span>
                           </div>
@@ -88,7 +95,7 @@ const StudentProfile = () => {
                       {currentUser.address && (
                         <div className="mb-3">
                           <div className="d-flex align-items-center">
-                            <i className="bi bi-house text-primary me-2"></i>
+                            <i className="bi bi-house me-2" style={{ color: theme.palette.primary.main }}></i>
                             <strong className="me-2">Address:</strong>
                             <span className="text-muted">{currentUser.address}</span>
                           </div>
@@ -98,7 +105,7 @@ const StudentProfile = () => {
                       {currentUser.dateOfBirth && (
                         <div className="mb-3">
                           <div className="d-flex align-items-center">
-                            <i className="bi bi-calendar text-primary me-2"></i>
+                            <i className="bi bi-calendar me-2" style={{ color: theme.palette.primary.main }}></i>
                             <strong className="me-2">Date of Birth:</strong>
                             <span className="text-muted">{new Date(currentUser.dateOfBirth).toLocaleDateString()}</span>
                           </div>
@@ -112,7 +119,7 @@ const StudentProfile = () => {
                   <Card className="dashboard-card">
                     <Card.Body className="p-4">
                       <h5 className="card-title fw-bold mb-3">
-                        <i className="bi bi-bell text-primary me-2"></i>
+                        <i className="bi bi-bell me-2" style={{ color: theme.palette.primary.main }}></i>
                         Notification Preferences
                       </h5>
                       <Row>

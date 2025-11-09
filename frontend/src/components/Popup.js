@@ -41,6 +41,20 @@ const Popup = ({ message, setShowPopup, showPopup }) => {
     dispatch(underStudentControl())
   }
 
+  const isSuccessMessage = (msg) => {
+    const successKeywords = [
+      "Done Successfully",
+      "successfully",
+      "success",
+      "added",
+      "updated",
+      "created",
+      "completed",
+      "saved",
+    ]
+    return successKeywords.some((keyword) => msg.toLowerCase().includes(keyword.toLowerCase()))
+  }
+
   return (
     <>
       <StyledSnackbar
@@ -50,7 +64,7 @@ const Popup = ({ message, setShowPopup, showPopup }) => {
         anchorOrigin={{ vertical, horizontal }}
         key={vertical + horizontal}
       >
-        {message === "Done Successfully" ? (
+        {isSuccessMessage(message) ? (
           <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
             {message}
           </Alert>
@@ -65,4 +79,3 @@ const Popup = ({ message, setShowPopup, showPopup }) => {
 }
 
 export default Popup
-
