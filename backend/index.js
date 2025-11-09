@@ -6,7 +6,26 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+// ✅ Safer CORS setup (does not affect tests)
+const allowedOrigins = [
+  "https://school-management-frontend.onrender.com", // your Render frontend
+  "http://localhost:3000",                           // local dev
+];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like Postman or tests)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 let mongoConnection = null;
 

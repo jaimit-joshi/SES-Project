@@ -1,6 +1,6 @@
 import axios from "axios"
 import { getRequest, getSuccess, getFailed, getError, stuffDone } from "./studentSlice"
-const REACT_APP_BASE_URL = "https://ses-project.onrender.com/"
+const REACT_APP_BASE_URL = "https://ses-project.onrender.com"
 export const getAllStudents = (id) => async (dispatch) => {
   dispatch(getRequest())
 

@@ -12,7 +12,7 @@ import {
   getFailed,
   getError,
 } from "./userSlice"
-const REACT_APP_BASE_URL = "https://ses-project.onrender.com/"
+const REACT_APP_BASE_URL = "https://ses-project.onrender.com"
 
 export const loginUser = (fields, role) => async (dispatch) => {
   dispatch(authRequest())
