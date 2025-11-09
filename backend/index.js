@@ -7,25 +7,30 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 
-// ✅ Safer CORS setup (does not affect tests)
+// ✅ Dynamic + Safe CORS setup (works for Render, localhost, and tests)
 const allowedOrigins = [
-  "https://school-management-frontend.onrender.com", // your Render frontend
-  "http://localhost:3000",                           // local dev
+  process.env.FRONTEND_URL || "https://school-management-frontend.onrender.com",
+  "http://localhost:3000",
 ];
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like Postman or tests)
+      // Allow requests with no origin (Postman, tests, etc.)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn("[CORS] Blocked origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
+
+// ✅ Handle preflight OPTIONS requests globally
+app.options("*", cors());
 
 let mongoConnection = null;
 
@@ -34,7 +39,7 @@ async function connectDB() {
     if (process.env.NODE_ENV === "test") {
       console.log("[v15] Mock DB active — skipping real Mongo connection");
 
-      // Prevent Mongoose from buffering operations when no real DB
+      // Prevent Mongoose from buffering when no DB is active
       mongoose.connect = async () => {};
       mongoose.createConnection = () => mongoose.connection;
       mongoose.connection.readyState = 1;
@@ -49,10 +54,12 @@ async function connectDB() {
     const mongoURI =
       process.env.MONGO_URL ||
       "mongodb://127.0.0.1:27017/school-management-system";
+
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+
     mongoConnection = mongoose.connection;
     console.log("[v15] Mongo connected:", mongoURI);
   } catch (err) {
@@ -60,7 +67,7 @@ async function connectDB() {
   }
 }
 
-// Import routes
+// ✅ Import routes safely
 try {
   const routes = require("./routes/route.js");
   app.use("/", routes);
@@ -68,6 +75,7 @@ try {
   console.warn("[v15] Routes not loaded:", err.message);
 }
 
+// ✅ Start server only outside test mode
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 5001;
   app.listen(PORT, () => console.log(`[v15] Server running on port ${PORT}`));
