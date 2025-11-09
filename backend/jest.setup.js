@@ -1,22 +1,16 @@
-const path = require("path");
+// backend/jest.setup.js
 const mongoose = require("mongoose");
-const { app, connectDB } = require(path.join(__dirname, "index.js"));
+const { app, connectDB } = require("./index");
 
 beforeAll(async () => {
-  console.log("[v12] Setting up test environment...");
-  await connectDB(); // mock or real depending on NODE_ENV
+  console.log("[v13] Setting up backend test environment...");
+  process.env.NODE_ENV = "test";
+  await connectDB();
 });
 
 afterAll(async () => {
-  console.log("[v12] Cleaning up...");
-  if (mongoose.connection.readyState === 1) {
-    try {
-      await mongoose.connection.close();
-      console.log("[v12] Mongo connection closed");
-    } catch (err) {
-      console.warn("[v12] Error closing mock connection:", err.message);
-    }
-  }
+  console.log("[v13] Cleaning up test environment...");
+  await mongoose.connection.close();
 });
 
 module.exports = app;

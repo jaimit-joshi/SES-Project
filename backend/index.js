@@ -1,52 +1,58 @@
-require("dotenv").config();
+// backend/index.js
 const express = require("express");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
+
+dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-// Example route setup
+// 🧩 Load routes dynamically
 try {
-  const studentRoutes = require("./routes/studentRoutes");
-  app.use("/", studentRoutes);
+  const routes = require("./routes/route");
+  app.use("/", routes);
 } catch (err) {
-  console.warn("[v12] Routes not loaded in test mode:", err.message);
+  console.warn("[v13] Routes not loaded:", err.message);
 }
 
-// ------------------
-// DB CONNECTION
-// ------------------
-const connectDB = async () => {
-  console.log("[v12] Environment variables loaded:");
-  console.log("[v12] PORT:", process.env.PORT);
-  console.log("[v12] NODE_ENV:", process.env.NODE_ENV);
+// ---------------------
+// Mongo Connection Logic
+// ---------------------
+let server;
 
-  if (process.env.NODE_ENV === "test") {
-    console.log("[v12] Using mock DB connection for tests...");
-    // create an in-memory connection object
-    mongoose.connection.readyState = 1;
-    mongoose.connection.db = {}; // mock object to avoid .db access errors
-    return mongoose.connection;
+async function connectDB() {
+  const env = process.env.NODE_ENV || "development";
+  let mongoURL;
+
+  if (env === "test") {
+    // ✅ Use in-memory / mock DB for CircleCI
+    mongoURL = "mongodb://127.0.0.1:27017/test-db";
+    console.log("[v13] Using temporary test DB connection:", mongoURL);
+  } else if (env === "production") {
+    mongoURL = process.env.MONGO_URL;
+    console.log("[v13] Using production DB connection");
+  } else {
+    mongoURL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/school-management-system";
+    console.log("[v13] Using local dev DB connection");
   }
 
-  const mongoURL = process.env.MONGO_URL;
-  if (!mongoURL) throw new Error("MONGO_URL not set");
+  try {
+    await mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log("[v13] MongoDB connected successfully");
+  } catch (err) {
+    console.error("[v13] Mongo connection error:", err);
+  }
+}
 
-  await mongoose.connect(mongoURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+// Only start the server when not in test mode
+if (process.env.NODE_ENV !== "test") {
+  connectDB().then(() => {
+    const PORT = process.env.PORT || 5001;
+    server = app.listen(PORT, () => console.log(`[v13] Server running on port ${PORT}`));
   });
-
-  console.log("[v12] MongoDB connected to:", mongoURL);
-  return mongoose.connection;
-};
+}
 
 module.exports = { app, connectDB };
-
-// Only start server if not in test mode
-if (process.env.NODE_ENV !== "test") {
-  const PORT = process.env.PORT || 5001;
-  connectDB().then(() =>
-    app.listen(PORT, () => console.log(`[v12] Server running on port ${PORT}`))
-  );
-}
