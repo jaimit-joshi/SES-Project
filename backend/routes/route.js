@@ -12,13 +12,20 @@ const {
   getSclassDetail,
   getSclassStudents,
 } = require("../controllers/class-controller.js")
-const { complainCreate, complainList } = require("../controllers/complain-controller.js")
+const {
+  complainCreate,
+  complainList,
+  updateComplainStatus,
+  getComplainsByUser,
+} = require("../controllers/complain-controller.js")
 const {
   noticeCreate,
   noticeList,
   deleteNotices,
   deleteNotice,
   updateNotice,
+  markNoticeAsRead,
+  unmarkNoticeAsRead,
 } = require("../controllers/notice-controller.js")
 const {
   studentRegister,
@@ -26,10 +33,10 @@ const {
   getStudents,
   getStudentDetail,
   deleteStudents,
+  deleteStudentsByClass,
   deleteStudent,
   updateStudent,
   studentAttendance,
-  deleteStudentsByClass,
   updateExamResult,
   clearAllStudentsAttendanceBySubject,
   clearAllStudentsAttendance,
@@ -121,11 +128,17 @@ router.delete("/Notice/:id", deleteNotice)
 
 router.put("/Notice/:id", updateNotice)
 
+router.put("/NoticeRead/:id", markNoticeAsRead)
+router.put("/NoticeUnread/:id", unmarkNoticeAsRead)
+
 // Complain
 
 router.post("/ComplainCreate", complainCreate)
 
 router.get("/ComplainList/:id", complainList)
+
+router.put("/ComplainStatus/:id", updateComplainStatus)
+router.get("/UserComplains/:id", getComplainsByUser)
 
 // Sclass
 

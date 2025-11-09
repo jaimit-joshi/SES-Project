@@ -36,6 +36,7 @@ const AddStudent = ({ situation }) => {
   const [password, setPassword] = useState("")
   const [className, setClassName] = useState("")
   const [sclassName, setSclassName] = useState("")
+  const [email, setEmail] = useState("")
 
   const adminID = currentUser._id
   const role = "Student"
@@ -66,7 +67,7 @@ const AddStudent = ({ situation }) => {
     }
   }
 
-  const fields = { name, rollNum, password, sclassName, adminID, role, attendance }
+  const fields = { name, rollNum, password, sclassName, adminID, role, attendance, email }
 
   const submitHandler = (event) => {
     event.preventDefault()
@@ -120,6 +121,20 @@ const AddStudent = ({ situation }) => {
                     placeholder="Enter student's name"
                     required
                     autoComplete="name"
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    variant="outlined"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter student's email"
+                    required
+                    autoComplete="email"
                   />
                 </Grid>
 
