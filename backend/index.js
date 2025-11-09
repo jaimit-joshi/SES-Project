@@ -7,47 +7,12 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 
-// ✅ Dynamic + Safe CORS setup (works for Render, localhost, and tests)
-const allowedOrigins = [
-  process.env.FRONTEND_URL || "https://school-management-frontend.onrender.com",
-  "http://localhost:3000",
-];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (Postman, tests, etc.)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn("[CORS] Blocked origin:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
-
-// ✅ Handle preflight OPTIONS requests globally
-app.options("*", cors());
-
-let mongoConnection = null;
-
+// ✅ Move connectDB definition before calling it
 async function connectDB() {
   try {
     if (process.env.NODE_ENV === "test") {
       console.log("[v15] Mock DB active — skipping real Mongo connection");
-
-      // Prevent Mongoose from buffering when no DB is active
-      mongoose.connect = async () => {};
-      mongoose.createConnection = () => mongoose.connection;
-      mongoose.connection.readyState = 1;
-      mongoose.connection.on = () => {};
-      mongoose.connection.close = async () => {};
       mongoose.set("bufferCommands", false);
-
-      mongoConnection = true;
       return;
     }
 
@@ -60,14 +25,43 @@ async function connectDB() {
       useUnifiedTopology: true,
     });
 
-    mongoConnection = mongoose.connection;
     console.log("[v15] Mongo connected:", mongoURI);
   } catch (err) {
     console.error("[v15] Mongo connection error:", err.message);
   }
 }
 
-// ✅ Import routes safely
+// ✅ connect DB only when not testing
+if (process.env.NODE_ENV !== "test") {
+  connectDB();
+}
+
+// ✅ Safe CORS config
+const allowedOrigins = [
+  "https://ses-project-1.onrender.com",
+  "https://school-management-frontend.onrender.com",
+  "http://localhost:3000",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn("[CORS] Blocked origin:", origin);
+        callback(null, false); // ✅ Return false instead of throwing error
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// ✅ Handle preflight
+app.options("*", cors());
+
+// ✅ Routes
 try {
   const routes = require("./routes/route.js");
   app.use("/", routes);
@@ -75,7 +69,7 @@ try {
   console.warn("[v15] Routes not loaded:", err.message);
 }
 
-// ✅ Start server only outside test mode
+// ✅ Start server when not in test mode
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 5001;
   app.listen(PORT, () => console.log(`[v15] Server running on port ${PORT}`));
