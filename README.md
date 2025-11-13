@@ -40,7 +40,7 @@ SLIMS is built using:
 - Node.js (v18 or higher)  
 - MongoDB  
 - npm package manager
-- 
+  
 ### 1️⃣ Clone the Repository  
 To get started, clone the project from GitHub: https://github.com/jaimit-joshi/SES-Project
 
