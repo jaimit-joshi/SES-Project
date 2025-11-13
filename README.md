@@ -1,4 +1,4 @@
-# 🎓 SLIMS — Smart Learning and Information Management System
+# 🎓 SLIMS — Student Learning and Information Management System
 
 ## 📘 Project Overview  
 The **Smart Learning and Information Management System (SLIMS)** is a full-stack web application designed to streamline academic and administrative processes between **Students**, **Teachers**, and **Admins**.  
