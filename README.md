@@ -6,10 +6,10 @@ It provides a centralized dashboard for managing users, tracking performance, ha
 
 The project’s goal is to create a **role-based**, **data-driven**, and **secure** environment that enhances collaboration and simplifies management tasks.
 
-Access the Actual Project at: https://ses-project-1.onrender.com 
+- Access the Actual Project at: https://ses-project-1.onrender.com 
 ---
 
-## 🏗️ Project Structure  
+## 🏗️ Project  Structure  
 
 The application follows a **modular MVC architecture**, integrating both **frontend** and **backend** components for smooth operation.
 
@@ -36,19 +36,22 @@ SLIMS is built using:
 
 ## ⚙️ Installation and Deployment Guide  
 
-### 1️⃣ Prerequisites  
+### Prerequisites  
 - Node.js (v18 or higher)  
 - MongoDB  
-- npm package manager  
+- npm package manager
+- 
+### 1️⃣ Clone the Repository  
+To get started, clone the project from GitHub: https://github.com/jaimit-joshi/SES-Project
 
 ### 2️⃣ Install dependencies  
 Run dependency installation in both backend and frontend directories.
 
 ### 3️⃣ Setup environment variables  
 Create a `.env` file in the root directory and add:
-MONGO_URI=your_mongodb_connection
-PORT=5000
-JWT_SECRET=your_secret_key
+- MONGO_URI=your_mongodb_connection
+- PORT=5000
+- JWT_SECRET=your_secret_key
 
 ### 4️⃣ Run the backend server  
 Run the backend development server to handle APIs and logic.
