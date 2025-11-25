@@ -53,7 +53,7 @@ const userSlice = createSlice({
     },
     authError: (state, action) => {
       state.status = "error"
-      state.error = action.payload
+      state.error = typeof action.payload === "string" ? action.payload : action.payload?.message || "An error occurred"
     },
     authLogout: (state) => {
       localStorage.removeItem("user")

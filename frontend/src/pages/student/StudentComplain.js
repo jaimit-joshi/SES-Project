@@ -19,7 +19,7 @@ const StudentComplain = () => {
   const { complainsList } = useSelector((state) => state.complain)
 
   const user = currentUser._id
-  const school = currentUser.school._id
+  const school = typeof currentUser.school === "object" ? currentUser.school._id : currentUser.school
   const address = "Complain"
 
   const fields = {

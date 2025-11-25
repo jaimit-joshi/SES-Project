@@ -57,6 +57,9 @@ const studentLogIn = async (req, res) => {
     }
 
     const student = await Student.findOne({ rollNum: String(rollNum), name: studentNameValue })
+      .populate("school", "schoolName")
+      .populate("sclassName", "sclassName")
+
     if (!student) {
       return res.status(404).json({ error: "Student not found" })
     }
@@ -100,8 +103,8 @@ const getStudentDetail = async (req, res) => {
     const student = await Student.findById(id)
       .populate("school", "schoolName")
       .populate("sclassName", "sclassName")
-      .populate("examResult.subName", "subName")
-      .populate("attendance.subName", "subName sessions")
+      .populate("examResult.subName", "subName subCode sessions")
+      .populate("attendance.subName", "subName subCode sessions")
 
     if (!student) return res.status(404).json({ error: "Student not found" })
     student.password = undefined
@@ -124,10 +127,21 @@ const updateStudent = async (req, res) => {
     }
 
     const updatedStudent = await Student.findByIdAndUpdate(id, updates, { new: true })
+      .populate("school", "schoolName")
+      .populate("sclassName", "sclassName")
+      .populate("examResult.subName", "subName subCode sessions")
+      .populate("attendance.subName", "subName subCode sessions")
+
     if (!updatedStudent) return res.status(404).json({ error: "Student not found" })
 
     updatedStudent.password = undefined
-    res.status(200).json({ message: "Student updated", student: updatedStudent })
+
+    // Return the student in the same format as login for consistency
+    res.status(200).json({
+      message: "Profile updated successfully",
+      role: "Student",
+      ...updatedStudent._doc,
+    })
   } catch (error) {
     console.error("Update student failed:", error)
     res.status(500).json({ error: "Server error" })

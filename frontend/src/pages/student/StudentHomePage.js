@@ -21,17 +21,33 @@ const StudentHomePage = () => {
   const [subjectAttendance, setSubjectAttendance] = useState([])
   const [examResults, setExamResults] = useState([])
 
-  const classID = currentUser.sclassName._id
+  const classID = typeof currentUser.sclassName === "object" ? currentUser.sclassName._id : currentUser.sclassName
 
   useEffect(() => {
     dispatch(getUserDetails(currentUser._id, "Student"))
-    dispatch(getSubjectList(classID, "ClassSubjects"))
+    if (classID) {
+      dispatch(getSubjectList(classID, "ClassSubjects"))
+    }
   }, [dispatch, currentUser._id, classID])
 
   useEffect(() => {
     if (userDetails) {
       setSubjectAttendance(userDetails.attendance || [])
       setExamResults(userDetails.examResult || [])
+
+      console.log("[v0] DEBUG - userDetails:", userDetails)
+      console.log("[v0] DEBUG - examResult array:", userDetails.examResult)
+      if (userDetails.examResult && userDetails.examResult.length > 0) {
+        console.log("[v0] DEBUG - First exam result:", userDetails.examResult[0])
+        console.log("[v0] DEBUG - First result.subName:", userDetails.examResult[0].subName)
+        console.log("[v0] DEBUG - Type of subName:", typeof userDetails.examResult[0].subName)
+        if (typeof userDetails.examResult[0].subName === "object") {
+          console.log("[v0] DEBUG - subName object keys:", Object.keys(userDetails.examResult[0].subName))
+          console.log("[v0] DEBUG - subName._id:", userDetails.examResult[0].subName._id)
+          console.log("[v0] DEBUG - subName.subName:", userDetails.examResult[0].subName.subName)
+          console.log("[v0] DEBUG - subName.subCode:", userDetails.examResult[0].subName.subCode)
+        }
+      }
     }
   }, [userDetails])
 
@@ -52,6 +68,28 @@ const StudentHomePage = () => {
 
   const averageMarks = calculateAverageMarks()
   const hasMarks = examResults && examResults.length > 0
+
+  const getSubjectNameFromResult = (result, index) => {
+    // If subName exists as an object with the name
+    if (result.subName && typeof result.subName === "object") {
+      return result.subName.subName || result.subName.name || "Subject"
+    }
+
+    // If subName exists as a string ID, try to match it
+    if (result.subName && typeof result.subName === "string") {
+      const matchedSubject = subjectsList?.find((subject) => subject._id === result.subName)
+      if (matchedSubject) {
+        return matchedSubject.subName
+      }
+    }
+
+    // Fallback: match by index if subjectsList exists and has enough subjects
+    if (subjectsList && subjectsList.length > index) {
+      return subjectsList[index].subName
+    }
+
+    return "Subject"
+  }
 
   const chartData = {
     labels: ["Present", "Absent"],
@@ -154,12 +192,16 @@ const StudentHomePage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {examResults.slice(0, 3).map((result, index) => (
-                      <tr key={index}>
-                        <td>{result.subName?.subName || "Subject"}</td>
-                        <td className="text-end">{result.marksObtained}</td>
-                      </tr>
-                    ))}
+                    {examResults.slice(0, 3).map((result, index) => {
+                      const subjectName = getSubjectNameFromResult(result, index)
+
+                      return (
+                        <tr key={index}>
+                          <td>{subjectName}</td>
+                          <td className="text-end">{result.marksObtained}</td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
                 {examResults.length > 3 && (
