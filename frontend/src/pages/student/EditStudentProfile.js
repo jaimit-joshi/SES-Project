@@ -52,21 +52,21 @@ const EditStudentProfile = () => {
   }, [currentUser])
 
   useEffect(() => {
-    if (updateSubmitted && !loading && !error) {
-      setAlertMessage("Profile updated successfully!")
-      setAlertType("success")
-      setShowAlert(true)
-      setUpdateSubmitted(false)
-      setTimeout(() => {
-        navigate("/Student/profile")
-      }, 1000)
-    }
-
-    if (updateSubmitted && !loading && error) {
-      setAlertMessage(error || "Failed to update profile. Please try again.")
-      setAlertType("danger")
-      setShowAlert(true)
-      setUpdateSubmitted(false)
+    if (updateSubmitted && !loading) {
+      if (!error) {
+        setAlertMessage("Profile updated successfully!")
+        setAlertType("success")
+        setShowAlert(true)
+        setUpdateSubmitted(false)
+        setTimeout(() => {
+          navigate("/Student/profile")
+        }, 1500)
+      } else {
+        setAlertMessage(error || "Failed to update profile. Please try again.")
+        setAlertType("danger")
+        setShowAlert(true)
+        setUpdateSubmitted(false)
+      }
     }
   }, [loading, error, updateSubmitted, navigate])
 

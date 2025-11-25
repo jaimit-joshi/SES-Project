@@ -88,25 +88,20 @@ export const deleteUser = (id, address) => async (dispatch) => {
 }*/
 
 export const updateUser = (fields, id, address) => async (dispatch) => {
-  console.log("[v0] updateUser called with:", { fields, id, address })
   dispatch(getRequest())
 
   try {
-    const url = `${REACT_APP_BASE_URL}/${address}/${id}`
-    console.log("[v0] Making PUT request to:", url)
-
-    const result = await axios.put(url, fields, {
+    const result = await axios.put(`${REACT_APP_BASE_URL}/${address}/${id}`, fields, {
       headers: { "Content-Type": "application/json" },
     })
 
-    console.log("[v0] Update response:", result.data)
-
-    if (result.data) {
+    if (result.data && result.data.role) {
+      dispatch(authSuccess(result.data))
+    } else if (result.data) {
       dispatch(authSuccess(result.data))
     }
   } catch (error) {
-    console.log("[v0] Update error:", error)
-    dispatch(getError(error))
+    dispatch(getError(error.response?.data?.error || error.message || "Failed to update"))
   }
 }
 
@@ -124,6 +119,6 @@ export const addStuff = (fields, address) => async (dispatch) => {
       dispatch(stuffAdded(result.data))
     }
   } catch (error) {
-    dispatch(authError(error))
+    dispatch(authError(error.response?.data?.error || error.message || "Failed to submit"))
   }
 }
