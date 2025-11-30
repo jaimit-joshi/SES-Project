@@ -6,7 +6,7 @@ import { getUserComplains } from "../../redux/complainRelated/complainHandle"
 import { Row, Col, Form, Button, Card, Spinner, Alert, Badge } from "react-bootstrap"
 import axios from "axios"
 
-const REACT_APP_BASE_URL = "http://localhost:5001"
+const REACT_APP_BASE_URL = "https://ses-project.onrender.com"
 
 const TeacherComplain = () => {
   const [complaint, setComplaint] = useState("")
